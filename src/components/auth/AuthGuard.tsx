@@ -28,24 +28,28 @@ export default function AuthGuard({
   useEffect(() => {
     if (!isHydrated) return
 
-    const isPublic = PUBLIC_ROUTES.some((route) => {
-      if (route === "/") return pathname === "/"
-      return pathname === route || pathname.startsWith(route + "/")
-    })
+    // 🚀 SKIP INTERNAL NEXT (INI KUNCI 🔥)
+    if (
+      pathname.startsWith("/_next") ||
+      pathname.startsWith("/api") ||
+      pathname.includes(".")
+    ) {
+      return
+    }
 
-    // 🔒 belum login → redirect kalau private
+    const isPublic = PUBLIC_ROUTES.some((route) =>
+      pathname === route || pathname.startsWith(route + "/")
+    )
+
     if (!user && !isPublic) {
       router.replace(`/login?redirect=${encodeURIComponent(pathname)}`)
-      return
     }
 
-    // 🔒 sudah login → blok login/register
     if (user && (pathname === "/login" || pathname === "/register")) {
       router.replace("/")
-      return
     }
 
-  }, [user, pathname, isHydrated, router])
+  }, [user, pathname, isHydrated])
 
   if (!isHydrated) return null
 
