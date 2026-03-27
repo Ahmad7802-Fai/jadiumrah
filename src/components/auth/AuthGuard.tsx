@@ -9,6 +9,7 @@ const PUBLIC_ROUTES = [
   "/paket",
   "/login",
   "/register",
+  "/tabungan-umrah"
   "/cicilan-umrah",
   "/jadwal-sholat",
   "/alquran",
@@ -27,21 +28,24 @@ export default function AuthGuard({
   useEffect(() => {
     if (!isHydrated) return
 
-    const isPublic = PUBLIC_ROUTES.some((route) =>
-      pathname === route || pathname.startsWith(route + "/")
-    )
+    const isPublic = PUBLIC_ROUTES.some((route) => {
+      if (route === "/") return pathname === "/"
+      return pathname === route || pathname.startsWith(route + "/")
+    })
 
     // 🔒 belum login → redirect kalau private
     if (!user && !isPublic) {
-      router.replace(`/login?redirect=${pathname}`)
+      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`)
+      return
     }
 
-    // 🔒 sudah login → tidak boleh ke login/register
+    // 🔒 sudah login → blok login/register
     if (user && (pathname === "/login" || pathname === "/register")) {
       router.replace("/")
+      return
     }
 
-  }, [user, pathname, isHydrated])
+  }, [user, pathname, isHydrated, router])
 
   if (!isHydrated) return null
 
