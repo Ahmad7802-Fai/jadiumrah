@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Jadiumrah</string>
+    <string name="title_activity_main">Jadiumrah</string>
+    <string name="package_name">com.jadiumrah.app</string>
+    <string name="custom_url_scheme">com.jadiumrah.app</string>
+</resources>
