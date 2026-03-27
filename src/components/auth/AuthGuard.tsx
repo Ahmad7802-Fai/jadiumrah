@@ -9,7 +9,7 @@ const PUBLIC_ROUTES = [
   "/paket",
   "/login",
   "/register",
-  "/tabungan-umrah"
+  "/tabungan-umrah",
   "/cicilan-umrah",
   "/jadwal-sholat",
   "/alquran",
