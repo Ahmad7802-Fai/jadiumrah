@@ -14,8 +14,9 @@ export function useAuth() {
         ? localStorage.getItem("token")
         : null
 
+    // 🔥 kalau ada token tapi store kosong → fetch user
     if (savedToken && !token) {
-      getMe()
+      getMe(savedToken)
         .then((user) => {
           setAuth(user, savedToken)
         })
@@ -28,7 +29,7 @@ export function useAuth() {
     } else {
       setLoading(false)
     }
-  }, [])
+  }, [token, setAuth, logout])
 
   return {
     ...useAuthStore(),

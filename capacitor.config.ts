@@ -4,10 +4,10 @@ const config: CapacitorConfig = {
   appId: 'com.jadiumrah.app',
   appName: 'Jadiumrah',
 
-  webDir: 'out', // biarkan (tidak dipakai saat dev)
+  webDir: 'out', // untuk build production
 
   server: {
-    url: "http://192.168.0.10:3000", // 🔥 WAJIB
+    url: "http://192.168.0.10:3000", // 🔥 IP laptop
     cleartext: true
   },
 

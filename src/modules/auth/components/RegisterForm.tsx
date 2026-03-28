@@ -41,7 +41,8 @@ export default function RegisterForm() {
       const res = await register(
         form.name,
         form.email,
-        form.password
+        form.password,
+        form.confirm // 🔥 TAMBAHKAN INI
       )
 
       setAuth(res.user, res.token)

@@ -15,8 +15,8 @@ export default function PaketDetailPage({ paket, pakets }: any) {
   }
 
   const imageSrc =
-    typeof paket.thumbnail === "string" && paket.thumbnail.length > 0
-      ? paket.thumbnail
+    typeof paket.image === "string" && paket.image.length > 0
+      ? paket.image
       : "/images/fallback.png"
 
   const rekomendasi =
@@ -41,12 +41,13 @@ export default function PaketDetailPage({ paket, pakets }: any) {
 
           <div className="absolute bottom-10 left-3 right-3 text-white">
 
-            <h1 className="text-[14px] md:text-xl font-semibold leading-snug line-clamp-2">
+            <h1 className="text-[14px] md:text-xl font-semibold line-clamp-2">
               {paket.name}
             </h1>
 
+            {/* 🔥 FIX */}
             <p className="text-[10px] md:text-xs text-white/80 mt-0.5">
-              {paket.duration_label} • {paket.airline}
+              {paket.duration} • {paket.airline}
             </p>
 
           </div>
@@ -54,36 +55,22 @@ export default function PaketDetailPage({ paket, pakets }: any) {
         </div>
 
         {/* ================= CONTENT ================= */}
-        <div
-          className="
-            max-w-4xl mx-auto
-            px-3
-            mt-3 md:mt-5
-
-            pb-[130px] md:pb-8
-          "
-        >
+        <div className="max-w-4xl mx-auto px-3 mt-3 md:mt-5 pb-[130px] md:pb-8">
 
           <div className="grid md:grid-cols-3 gap-3 md:gap-5">
 
-            {/* ================= LEFT ================= */}
-            <div className="md:col-span-2 space-y-4 md:space-y-6 min-w-0">
+            {/* LEFT */}
+            <div className="md:col-span-2 space-y-4 md:space-y-6">
 
-              {/* TABS */}
-              <div className="scale-[0.98] origin-top">
-                <PaketTabs paket={paket} />
-              </div>
+              <PaketTabs paket={paket} />
 
-              {/* REKOMENDASI */}
               {rekomendasi.length > 0 && (
-                <div className="overflow-hidden -mx-1">
-                  <PaketRekomendasi pakets={rekomendasi} />
-                </div>
+                <PaketRekomendasi pakets={rekomendasi} />
               )}
 
             </div>
 
-            {/* ================= DESKTOP CTA ================= */}
+            {/* DESKTOP CTA */}
             <div className="hidden md:block">
 
               <div className="sticky top-[70px] space-y-3">
@@ -94,23 +81,12 @@ export default function PaketDetailPage({ paket, pakets }: any) {
                     Mulai dari
                   </div>
 
+                  {/* 🔥 FIX */}
                   <div className="text-lg font-bold text-green-600">
-                    {formatRupiah(paket.price_start_from)}
+                    {formatRupiah(paket.price || 0)}
                   </div>
 
-                  <button
-                    className="
-                      w-full
-                      bg-green-600 hover:bg-green-700
-                      text-white
-
-                      py-2
-                      rounded-lg
-                      text-xs font-semibold
-
-                      active:scale-95 transition
-                    "
-                  >
+                  <button className="w-full bg-green-600 text-white py-2 rounded-lg text-xs font-semibold">
                     Booking
                   </button>
 
@@ -118,7 +94,7 @@ export default function PaketDetailPage({ paket, pakets }: any) {
 
                 <div className="bg-white rounded-lg shadow-sm p-2 text-[11px] text-gray-600 space-y-1">
                   <div>✈️ {paket.airline}</div>
-                  <div>🕋 {paket.duration_label}</div>
+                  <div>🕋 {paket.duration}</div>
                 </div>
 
               </div>
@@ -129,8 +105,8 @@ export default function PaketDetailPage({ paket, pakets }: any) {
         </div>
       </div>
 
-      {/* ================= MOBILE CTA ================= */}
-      <MobileCTA price={paket.price_start_from} />
+      {/* 🔥 FIX */}
+      <MobileCTA price={paket.price || 0} />
     </>
   )
 }

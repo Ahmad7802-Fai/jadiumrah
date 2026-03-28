@@ -1,106 +1,37 @@
 import { api } from "@/lib/api"
-import {
-  AuthResponse,
-  AuthResponseAPI,
-  User,
-} from "../types/types"
+import { ENDPOINT } from "@/lib/endpoints"
 
-// ===============================
-// 🔥 MAP USER
-// ===============================
-function mapUser(data: any): User {
-  return {
-    id: data.id,
-    name: data.name,
-    email: data.email,
-
-    role: data.profile_type === "agent" ? "agent" : "jamaah",
-
-    agent: data.agent_profile
-      ? {
-          id: data.agent_profile.id,
-          nama: data.agent_profile.nama,
-          kode_agent: data.agent_profile.kode_agent,
-          phone: data.agent_profile.phone,
-          avatar: data.agent_profile.avatar ?? null,
-        }
-      : null,
-
-    jamaah: data.jamaah_profile
-      ? {
-          id: data.jamaah_profile.id,
-          jamaah_code: data.jamaah_profile.jamaah_code,
-          nama_lengkap: data.jamaah_profile.nama_lengkap,
-          phone: data.jamaah_profile.phone,
-          avatar: data.jamaah_profile.avatar ?? null,
-        }
-      : null,
-  }
-}
-
-// ===============================
-// 🔐 LOGIN
-// ===============================
-export async function login(
-  email: string,
-  password: string
-): Promise<AuthResponse> {
-  const res = await api.post<AuthResponseAPI>("/login", {
+export async function login(email: string, password: string) {
+  const res = await api.post(ENDPOINT.LOGIN, {
     email,
     password,
   })
 
-  // 🔥 simpan token
-  if (typeof window !== "undefined") {
-    localStorage.setItem("token", res.data.token)
-  }
-
-  return {
-    token: res.data.token,
-    user: mapUser(res.data.user),
-  }
+  return res.data
 }
 
-// ===============================
-// 📝 REGISTER (FIX VALIDASI)
-// ===============================
 export async function register(
   name: string,
   email: string,
-  password: string
-): Promise<AuthResponse> {
-  const res = await api.post<AuthResponseAPI>("/register", {
+  password: string,
+  password_confirmation: string
+) {
+  const res = await api.post(ENDPOINT.REGISTER, {
     name,
     email,
     password,
-    password_confirmation: password, // 🔥 WAJIB
+    password_confirmation,
   })
 
-  // 🔥 auto login setelah register
-  if (typeof window !== "undefined") {
-    localStorage.setItem("token", res.data.token)
-  }
-
-  return {
-    token: res.data.token,
-    user: mapUser(res.data.user),
-  }
+  return res.data
 }
 
-// ===============================
-// 👤 GET ME
-// ===============================
-export async function getMe(): Promise<User> {
-  const res = await api.get("/me")
-  return mapUser(res.data)
-}
+export async function getMe(token: string) {
+  const res = await api.get(ENDPOINT.ME, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
 
-// ===============================
-// 🚪 LOGOUT
-// ===============================
-export function logout() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("token")
-    window.location.href = "/login"
-  }
+  return res.data
 }

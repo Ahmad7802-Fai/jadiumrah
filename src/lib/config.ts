@@ -1,31 +1,66 @@
 // ===============================
-// APP CONFIG
+// ENV CONFIG
 // ===============================
-export const APP_NAME =
-  process.env.NEXT_PUBLIC_APP_NAME || "jadiumrah.com"
 
 export const APP_ENV =
   process.env.NEXT_PUBLIC_APP_ENV || "local"
 
-// ===============================
-// API CONFIG
-// ===============================
-export const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1"
+const ENV_API =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://app.jadiumrah.cloud/api/v1"
 
-export const STORAGE_URL =
-  process.env.NEXT_PUBLIC_STORAGE_URL || "http://127.0.0.1:8000"
+const ENV_STORAGE =
+  process.env.NEXT_PUBLIC_STORAGE_URL ||
+  "https://app.jadiumrah.cloud"
 
 // ===============================
-// SAFETY CHECK
+// RUNTIME CONFIG (REMOTE)
 // ===============================
-if (!BASE_URL) {
-  throw new Error("❌ NEXT_PUBLIC_API_URL belum diset")
+
+type RuntimeConfig = {
+  api: string
+  storage: string
+  feature: Record<string, boolean>
+}
+
+let runtimeConfig: RuntimeConfig = {
+  api: ENV_API,
+  storage: ENV_STORAGE,
+  feature: {},
+}
+
+// ===============================
+// SETTER
+// ===============================
+
+export function setRuntimeConfig(config: Partial<RuntimeConfig>) {
+  runtimeConfig = {
+    ...runtimeConfig,
+    ...config,
+  }
+}
+
+// ===============================
+// GETTERS
+// ===============================
+
+export function getAPI() {
+  return runtimeConfig.api
+}
+
+export function getStorage() {
+  return runtimeConfig.storage
+}
+
+export function getFeature(name: string) {
+  return runtimeConfig.feature?.[name] ?? false
 }
 
 // ===============================
 // DEBUG
 // ===============================
-if (APP_ENV === "local") {
-  console.log("🌍 API:", BASE_URL)
+
+if (typeof window !== "undefined") {
+  console.log("🌍 ENV:", APP_ENV)
+  console.log("🚀 API:", runtimeConfig.api)
 }

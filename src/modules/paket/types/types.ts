@@ -16,7 +16,7 @@ export interface PaketApi {
 
   price_start_from: number
   price_label: string
-
+  promo_label?: string | null
   original_price: number
   original_price_label: string
 
@@ -28,7 +28,16 @@ export interface PaketApi {
   is_active: boolean
   is_published: boolean
 
+  // 🔥 INI SUDAH ADA
   next_departure: PaketDepartureApi | null
+
+  // ===============================
+  // 🔥 TAMBAHKAN INI (FIX ERROR)
+  // ===============================
+  available_seats?: number
+  bookings_count?: number
+  seat_label?: string
+  is_sold_out?: boolean
 
   created_at: string
   updated_at: string | null
@@ -101,12 +110,15 @@ export interface Paket {
 
   price: number
   priceLabel: string
-
+  promo_label?: string | null
   originalPrice?: number
   originalPriceLabel?: string
 
   seat: number
   totalSeat: number
+
+  // 🔥 TAMBAH INI
+  seatLabel?: string | null
 
   isPromo: boolean
   discount?: number
@@ -116,6 +128,7 @@ export interface Paket {
 
   departureDate?: string | null
   availability?: string | null
+  isSoldOut?: boolean
 }
 
 export interface PaketDetailApi {
