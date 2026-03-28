@@ -1,68 +1,48 @@
+import axios from "axios"
 import { BASE_URL } from "./config"
 
 // ===============================
-// GENERIC API FETCH
+// AXIOS INSTANCE
 // ===============================
-export async function apiFetch<T = any>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
-    credentials: "include", // 🔥 WAJIB untuk Sanctum
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    },
-    ...options
-  })
+export const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
 
-  // ===============================
-  // HANDLE ERROR
-  // ===============================
-  if (!res.ok) {
-    let message = `API Error: ${res.status}`
+// ===============================
+// REQUEST INTERCEPTOR
+// ===============================
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token")
 
-    try {
-      const data = await res.json()
-      message = data?.message || message
-    } catch {}
-
-    throw new Error(message)
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
   }
 
-  return res.json()
-}
+  return config
+})
 
 // ===============================
-// CSRF (WAJIB UNTUK LOGIN)
+// RESPONSE INTERCEPTOR
 // ===============================
-export async function getCsrfCookie() {
-  await fetch(`${BASE_URL.replace("/api/v1", "")}/sanctum/csrf-cookie`, {
-    credentials: "include"
-  })
-}
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    const status = err.response?.status
 
-// ===============================
-// AUTH API
-// ===============================
-export async function login(data: {
-  email: string
-  password: string
-}) {
-  await getCsrfCookie()
+    if (status === 401) {
+      console.log("❌ Unauthorized → logout")
 
-  return apiFetch("/login", {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
-}
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token")
+        window.location.href = "/login"
+      }
+    }
 
-export async function logout() {
-  return apiFetch("/logout", {
-    method: "POST"
-  })
-}
-
-export async function getUser() {
-  return apiFetch("/user")
-}
+    return Promise.reject(err)
+  }
+)

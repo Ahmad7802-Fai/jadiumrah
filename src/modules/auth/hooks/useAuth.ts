@@ -1,25 +1,37 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useAuthStore } from "../store/authStore"
 import { getMe } from "../services/authService"
 
 export function useAuth() {
-  const { token, setAuth } = useAuthStore()
+  const { token, setAuth, logout } = useAuthStore()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token")
+    const savedToken =
+      typeof window !== "undefined"
+        ? localStorage.getItem("token")
+        : null
 
     if (savedToken && !token) {
-      getMe(savedToken)
+      getMe()
         .then((user) => {
           setAuth(user, savedToken)
         })
         .catch(() => {
-          localStorage.removeItem("token")
+          logout()
         })
+        .finally(() => {
+          setLoading(false)
+        })
+    } else {
+      setLoading(false)
     }
   }, [])
 
-  return useAuthStore()
+  return {
+    ...useAuthStore(),
+    loading,
+  }
 }

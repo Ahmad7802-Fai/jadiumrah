@@ -1,5 +1,4 @@
-import axios from "axios"
-import { BASE_URL } from "@/lib/config"
+import { api } from "@/lib/api"
 import {
   AuthResponse,
   AuthResponseAPI,
@@ -7,7 +6,7 @@ import {
 } from "../types/types"
 
 // ===============================
-// 🔥 MAPPING USER (WAJIB)
+// 🔥 MAP USER
 // ===============================
 function mapUser(data: any): User {
   return {
@@ -15,10 +14,8 @@ function mapUser(data: any): User {
     name: data.name,
     email: data.email,
 
-    // ✅ SAFE ROLE
     role: data.profile_type === "agent" ? "agent" : "jamaah",
 
-    // ✅ AGENT
     agent: data.agent_profile
       ? {
           id: data.agent_profile.id,
@@ -29,7 +26,6 @@ function mapUser(data: any): User {
         }
       : null,
 
-    // ✅ JAMAAH
     jamaah: data.jamaah_profile
       ? {
           id: data.jamaah_profile.id,
@@ -49,10 +45,15 @@ export async function login(
   email: string,
   password: string
 ): Promise<AuthResponse> {
-  const res = await axios.post<AuthResponseAPI>(`${BASE_URL}/login`, {
+  const res = await api.post<AuthResponseAPI>("/login", {
     email,
     password,
   })
+
+  // 🔥 simpan token
+  if (typeof window !== "undefined") {
+    localStorage.setItem("token", res.data.token)
+  }
 
   return {
     token: res.data.token,
@@ -61,18 +62,24 @@ export async function login(
 }
 
 // ===============================
-// 📝 REGISTER
+// 📝 REGISTER (FIX VALIDASI)
 // ===============================
 export async function register(
   name: string,
   email: string,
   password: string
 ): Promise<AuthResponse> {
-  const res = await axios.post<AuthResponseAPI>(`${BASE_URL}/register`, {
+  const res = await api.post<AuthResponseAPI>("/register", {
     name,
     email,
     password,
+    password_confirmation: password, // 🔥 WAJIB
   })
+
+  // 🔥 auto login setelah register
+  if (typeof window !== "undefined") {
+    localStorage.setItem("token", res.data.token)
+  }
 
   return {
     token: res.data.token,
@@ -81,14 +88,19 @@ export async function register(
 }
 
 // ===============================
-// 👤 GET PROFILE
+// 👤 GET ME
 // ===============================
-export async function getMe(token: string): Promise<User> {
-  const res = await axios.get(`${BASE_URL}/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-
+export async function getMe(): Promise<User> {
+  const res = await api.get("/me")
   return mapUser(res.data)
+}
+
+// ===============================
+// 🚪 LOGOUT
+// ===============================
+export function logout() {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("token")
+    window.location.href = "/login"
+  }
 }
