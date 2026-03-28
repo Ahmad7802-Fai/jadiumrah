@@ -9,21 +9,19 @@ export const APP_ENV =
   process.env.NEXT_PUBLIC_APP_ENV || "local"
 
 // ===============================
-// API CONFIG
+// API CONFIG (SAFE)
 // ===============================
 
-export const BASE_URL = process.env.NEXT_PUBLIC_API_URL
+const baseUrl = process.env.NEXT_PUBLIC_API_URL
+
+if (!baseUrl) {
+  throw new Error("❌ NEXT_PUBLIC_API_URL belum diset di .env")
+}
+
+export const BASE_URL = baseUrl
 
 export const STORAGE_URL =
   process.env.NEXT_PUBLIC_STORAGE_URL || "http://127.0.0.1:8000"
-
-// ===============================
-// SAFETY CHECK (ANTI ERROR)
-// ===============================
-
-if (!BASE_URL) {
-  throw new Error("❌ NEXT_PUBLIC_API_URL belum diset di .env")
-}
 
 // ===============================
 // DEBUG (optional)
