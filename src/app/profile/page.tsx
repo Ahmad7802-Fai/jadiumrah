@@ -1,5 +1,5 @@
-import ProfileSection from "@/modules/profile/sections/ProfileSection"
+import ProfilePage from "@/modules/profile/pages/ProfilePage"
 
 export default function Page() {
-  return <ProfileSection />
+  return <ProfilePage />
 }

@@ -1,38 +1,37 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { authService } from "../services/authService"
 import { useAuthStore } from "../store/authStore"
-import { getMe } from "../services/authService"
 
 export function useAuth() {
-  const { token, setAuth, logout } = useAuthStore()
+  const { user, setUser, reset } = useAuthStore() // 🔥 FIX
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const savedToken =
-      typeof window !== "undefined"
-        ? localStorage.getItem("token")
-        : null
+    const init = async () => {
+      try {
+        const token = localStorage.getItem("token")
 
-    // 🔥 kalau ada token tapi store kosong → fetch user
-    if (savedToken && !token) {
-      getMe(savedToken)
-        .then((user) => {
-          setAuth(user, savedToken)
-        })
-        .catch(() => {
-          logout()
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-    } else {
-      setLoading(false)
+        if (!token) {
+          reset() // 🔥 FIX
+          return
+        }
+
+        const res = await authService.me()
+
+        setUser(res.data)
+
+      } catch (err) {
+        reset() // 🔥 FIX
+        localStorage.removeItem("token")
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [token, setAuth, logout])
 
-  return {
-    ...useAuthStore(),
-    loading,
-  }
+    init()
+  }, [])
+
+  return { user, loading }
 }

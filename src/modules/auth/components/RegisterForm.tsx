@@ -3,151 +3,138 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-
-import { register } from "../services/authService"
-import { useAuthStore } from "../store/authStore"
+import { authService } from "../services/authService"
 
 export default function RegisterForm() {
   const router = useRouter()
-  const { setAuth } = useAuthStore()
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
-    confirm: "",
+    password_confirmation: "",
   })
 
   const [loading, setLoading] = useState(false)
-  const [errorMsg, setErrorMsg] = useState("")
+  const [error, setError] = useState("")
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
-
-    // 🔥 VALIDASI CEPAT
-    if (form.password !== form.confirm) {
-      setErrorMsg("Password tidak sama ❌")
-      return
-    }
+    setLoading(true)
+    setError("")
 
     try {
-      setLoading(true)
-      setErrorMsg("")
+      await authService.register(form)
 
-      const res = await register(
-        form.name,
-        form.email,
-        form.password,
-        form.confirm // 🔥 TAMBAHKAN INI
-      )
+      // ✅ langsung redirect ke success page
+      router.push("/register/success")
 
-      setAuth(res.user, res.token)
-
-      // 🔥 redirect sukses
-      router.replace("/register/success")
-
-    } catch (error: any) {
-      const msg =
-        error.response?.data?.message ||
-        "Register gagal ❌"
-
-      setErrorMsg(msg)
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Register gagal")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="w-full max-w-md mx-auto px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-3 bg-white p-4 rounded-2xl shadow-sm border"
-      >
+    <div className="min-h-screen flex items-center justify-center bg-[#f5f7f4] px-4">
+
+      <div className="w-full max-w-sm bg-white p-6 rounded-2xl shadow-sm space-y-4">
+
         {/* TITLE */}
         <div className="text-center">
-          <h1 className="text-lg font-semibold">Daftar</h1>
+          <h1 className="text-lg font-semibold">Daftar Akun</h1>
           <p className="text-xs text-gray-500">
-            Mulai perjalanan umrahmu ✨
+            Buat akun untuk mulai perjalanan umroh
           </p>
         </div>
 
         {/* ERROR */}
-        {errorMsg && (
-          <div className="bg-red-100 text-red-600 text-xs p-2 rounded-lg text-center">
-            {errorMsg}
+        {error && (
+          <div className="text-red-500 text-xs text-center">
+            {error}
           </div>
         )}
 
-        {/* NAME */}
-        <input
-          name="name"
-          placeholder="Nama lengkap"
-          value={form.name}
-          onChange={handleChange}
-          autoFocus
-          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        {/* FORM */}
+        <form onSubmit={handleSubmit} className="space-y-3">
 
-        {/* EMAIL */}
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+          {/* NAME */}
+          <input
+            type="text"
+            placeholder="Nama lengkap"
+            value={form.name}
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
 
-        {/* PASSWORD */}
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+          {/* EMAIL */}
+          <input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
 
-        {/* CONFIRM */}
-        <input
-          name="confirm"
-          type="password"
-          placeholder="Konfirmasi Password"
-          value={form.confirm}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+          {/* PASSWORD */}
+          <input
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
 
-        {/* BUTTON */}
-        <button
-          type="submit"
-          disabled={
-            loading ||
-            !form.name ||
-            !form.email ||
-            !form.password ||
-            !form.confirm
-          }
-          className="w-full bg-green-600 text-white rounded-lg py-2 text-sm font-medium disabled:opacity-50"
-        >
-          {loading ? "Loading..." : "Daftar"}
-        </button>
+          {/* CONFIRM PASSWORD */}
+          <input
+            type="password"
+            placeholder="Konfirmasi password"
+            value={form.password_confirmation}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                password_confirmation: e.target.value,
+              })
+            }
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
 
-        {/* FOOTER */}
-        <div className="text-center text-xs text-gray-500 pt-2">
+          {/* BUTTON */}
+          <button
+            disabled={
+              loading ||
+              !form.name ||
+              !form.email ||
+              !form.password ||
+              !form.password_confirmation
+            }
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-sm transition disabled:opacity-50"
+          >
+            {loading ? "Memproses..." : "Daftar"}
+          </button>
+
+        </form>
+
+        {/* LOGIN LINK */}
+        <div className="text-center text-xs text-gray-500">
           Sudah punya akun?{" "}
           <Link
             href="/login"
-            className="text-green-600 font-medium"
+            className="text-green-600 font-medium hover:underline"
           >
             Login
           </Link>
         </div>
-      </form>
+
+      </div>
+
     </div>
   )
 }

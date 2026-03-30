@@ -1,37 +1,52 @@
 import { api } from "@/lib/api"
-import { ENDPOINT } from "@/lib/endpoints"
 
-export async function login(email: string, password: string) {
-  const res = await api.post(ENDPOINT.LOGIN, {
-    email,
-    password,
-  })
-
-  return res.data
+// ===============================
+// TYPES (optional nanti bisa dipindah ke types/)
+// ===============================
+type LoginPayload = {
+  email: string
+  password: string
 }
 
-export async function register(
-  name: string,
-  email: string,
-  password: string,
+type RegisterPayload = {
+  name: string
+  email: string
+  password: string
   password_confirmation: string
-) {
-  const res = await api.post(ENDPOINT.REGISTER, {
-    name,
-    email,
-    password,
-    password_confirmation,
-  })
-
-  return res.data
 }
 
-export async function getMe(token: string) {
-  const res = await api.get(ENDPOINT.ME, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
+// ===============================
+// AUTH API
+// ===============================
 
-  return res.data
+export const authService = {
+  login: async (data: LoginPayload) => {
+    const res = await api.post("/login", data)
+    return res.data
+  },
+
+  register: async (data: RegisterPayload) => {
+    const res = await api.post("/register", data)
+    return res.data
+  },
+
+  me: async () => {
+    const res = await api.get("/me")
+    return res.data
+  },
+
+  logout: async () => {
+    const res = await api.post("/logout")
+    return res.data
+  },
+
+  forgotPassword: async (email: string) => {
+    const res = await api.post("/forgot-password", { email })
+    return res.data
+  },
+
+  resetPassword: async (data: any) => {
+    const res = await api.post("/reset-password", data)
+    return res.data
+  },
 }

@@ -4,7 +4,7 @@ import { useAuthStore } from "@/modules/auth/store/authStore"
 import { useRouter } from "next/navigation"
 
 export default function ProfileSection() {
-  const { user, logout } = useAuthStore()
+  const { user, reset } = useAuthStore() // 🔥 FIX
   const router = useRouter()
 
   if (!user) return null
@@ -60,7 +60,8 @@ export default function ProfileSection() {
       {/* LOGOUT */}
       <button
         onClick={() => {
-          logout()
+          reset() // 🔥 FIX
+          localStorage.removeItem("token") // 🔥 WAJIB
           router.push("/login")
         }}
         className="w-full bg-red-500 text-white py-2 rounded-lg text-sm"

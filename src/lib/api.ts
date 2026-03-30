@@ -6,8 +6,10 @@ import { getAPI } from "./config"
 // ===============================
 
 export const api = axios.create({
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
   timeout: 15000,
 })
@@ -19,15 +21,21 @@ export const api = axios.create({
 api.interceptors.request.use((config) => {
   config.baseURL = getAPI()
 
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token")
+  // 🔥 AMBIL TOKEN DARI LOCALSTORAGE
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("token")
+      : null
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
 
-  console.log("📡", config.method?.toUpperCase(), config.baseURL + config.url)
+  console.log(
+    "📡",
+    config.method?.toUpperCase(),
+    config.baseURL + config.url
+  )
 
   return config
 })
@@ -48,12 +56,26 @@ api.interceptors.response.use(
     }
 
     const status = err.response.status
+    const currentPath =
+      typeof window !== "undefined" ? window.location.pathname : ""
 
     console.error("❌ API ERROR:", status, err.response.data)
 
-    if (status === 401) {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token")
+    // 🔥 HANDLE 401
+    if (status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("token")
+
+      const publicRoutes = [
+        "/",
+        "/login",
+        "/register",
+        "/forgot-password",
+        "/verify-success",
+      ]
+
+      const isPublic = publicRoutes.includes(currentPath)
+
+      if (!isPublic) {
         window.location.href = "/login"
       }
     }
