@@ -1,3 +1,5 @@
+// src/lib/api.ts
+
 import axios from "axios"
 import { getAPI } from "./config"
 
@@ -6,36 +8,24 @@ import { getAPI } from "./config"
 // ===============================
 
 export const api = axios.create({
-  withCredentials: true,
+  baseURL: getAPI(), // 🔥 otomatis https://app.jadiumrah.cloud/api/v1
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json",
   },
-  timeout: 15000,
 })
 
 // ===============================
-// REQUEST INTERCEPTOR
+// REQUEST INTERCEPTOR (TOKEN)
 // ===============================
 
 api.interceptors.request.use((config) => {
-  config.baseURL = getAPI()
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token")
 
-  // 🔥 AMBIL TOKEN DARI LOCALSTORAGE
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("token")
-      : null
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
   }
-
-  console.log(
-    "📡",
-    config.method?.toUpperCase(),
-    config.baseURL + config.url
-  )
 
   return config
 })
@@ -45,41 +35,36 @@ api.interceptors.request.use((config) => {
 // ===============================
 
 api.interceptors.response.use(
-  (res) => {
-    console.log("✅", res.config.url, res.status)
-    return res
+  (response) => {
+    return response
   },
-  (err) => {
-    if (!err.response) {
-      console.error("🌐 NETWORK ERROR:", err.message)
-      return Promise.reject(err)
-    }
+  (error) => {
+    // 🔥 HANDLE GLOBAL ERROR
 
-    const status = err.response.status
-    const currentPath =
-      typeof window !== "undefined" ? window.location.pathname : ""
+    if (error.response) {
+      const status = error.response.status
 
-    console.error("❌ API ERROR:", status, err.response.data)
-
-    // 🔥 HANDLE 401
-    if (status === 401 && typeof window !== "undefined") {
-      localStorage.removeItem("token")
-
-      const publicRoutes = [
-        "/",
-        "/login",
-        "/register",
-        "/forgot-password",
-        "/verify-success",
-      ]
-
-      const isPublic = publicRoutes.includes(currentPath)
-
-      if (!isPublic) {
-        window.location.href = "/login"
+      // 🔐 UNAUTHORIZED → AUTO LOGOUT
+      if (status === 401) {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token")
+          window.location.href = "/login"
+        }
       }
+
+      // ❌ VALIDATION ERROR
+      if (status === 422) {
+        console.error("Validation Error:", error.response.data)
+      }
+
+      // 💥 SERVER ERROR
+      if (status === 500) {
+        console.error("Server Error:", error.response.data)
+      }
+    } else {
+      console.error("Network Error:", error)
     }
 
-    return Promise.reject(err)
+    return Promise.reject(error)
   }
 )

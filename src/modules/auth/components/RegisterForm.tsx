@@ -18,24 +18,53 @@ export default function RegisterForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
+  // ===============================
+  // SUBMIT
+  // ===============================
   const handleSubmit = async (e: any) => {
     e.preventDefault()
+
     setLoading(true)
     setError("")
 
-    try {
-      await authService.register(form)
+    // 🔥 VALIDASI FRONTEND
+    if (form.password !== form.password_confirmation) {
+      setError("Password tidak sama")
+      setLoading(false)
+      return
+    }
 
-      // ✅ langsung redirect ke success page
+    try {
+      console.log("🚀 SEND DATA:", form)
+
+      const res = await authService.register(form)
+
+      console.log("✅ SUCCESS:", res)
+
+      // redirect sukses
       router.push("/register/success")
 
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Register gagal")
+      console.log("❌ FULL ERROR:", err)
+
+      const res = err?.response?.data
+
+      // 🔥 HANDLE VALIDATION LARAVEL
+      if (res?.errors) {
+        const firstError = Object.values(res.errors)[0] as any
+        setError(firstError?.message || "Validasi gagal")
+      } else {
+        setError(res?.message || "Register gagal")
+      }
+
     } finally {
       setLoading(false)
     }
   }
 
+  // ===============================
+  // UI
+  // ===============================
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f5f7f4] px-4">
 
@@ -51,7 +80,7 @@ export default function RegisterForm() {
 
         {/* ERROR */}
         {error && (
-          <div className="text-red-500 text-xs text-center">
+          <div className="bg-red-50 text-red-500 text-xs text-center p-2 rounded-lg">
             {error}
           </div>
         )}
