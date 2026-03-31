@@ -90,3 +90,4 @@ if (typeof window !== "undefined") {
   console.log("🚀 API BASE:", runtimeConfig.apiBase)
   console.log("🚀 API FULL:", getAPI())
 }
+

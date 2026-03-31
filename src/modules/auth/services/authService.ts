@@ -4,7 +4,6 @@ import { API_ROUTES } from "@/lib/config"
 // ===============================
 // TYPES
 // ===============================
-
 type LoginPayload = {
   email: string
   password: string
