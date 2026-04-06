@@ -6,7 +6,10 @@ export function mapPaket(item: PaketApi): Paket {
     name: item.name,
     slug: item.slug,
 
-    image: item.thumbnail,
+    // 🔥 FIX CDN IMAGE
+    image: item.thumbnail_url
+    ? item.thumbnail_url.replace("/storage/", "/resize/") + "?w=600"
+    : "/images/fallback.png",
 
     duration: item.duration_label,
     airline: item.airline,
@@ -63,8 +66,13 @@ export function mapPaketDetail(data: PaketDetailApi) {
     airline: data.airline,
     city: data.departure_city,
 
-    image: data.thumbnail,
-    gallery: data.gallery ?? [],
+    image: data.thumbnail
+      ? data.thumbnail.replace("https://app.jadiumrah.cloud", "")
+    : null,
+      
+    gallery: data.gallery?.map((img) =>
+      img.replace("https://app.jadiumrah.cloud", "")
+    ) ?? [],
 
     // 🔥 PRICE
     price:
@@ -111,5 +119,6 @@ export function mapPaketDetail(data: PaketDetailApi) {
     prices,
 
     cheapestRoom: cheapest?.room_type,
-  }
+  } 
 }
+

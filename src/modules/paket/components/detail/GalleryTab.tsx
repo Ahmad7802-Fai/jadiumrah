@@ -1,8 +1,16 @@
 "use client"
 
+import { useState } from "react"
+import { toCDNImage } from "@/lib/image"
+import { useImageSize } from "@/lib/useImageSize"
+import GalleryViewer from "./GalleryViewer"
+
 export default function GalleryTab({ paket }: any) {
+  const size = useImageSize()
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
   const images = [
-    paket.thumbnail,
+    paket.image,
     ...(paket.gallery || []),
   ].filter(Boolean)
 
@@ -15,21 +23,33 @@ export default function GalleryTab({ paket }: any) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <>
+      <div className="grid grid-cols-2 gap-2">
 
-      {images.map((img: string, i: number) => (
-        <div
-          key={i}
-          className="relative h-[110px] rounded-xl overflow-hidden"
-        >
-          <img
-            src={img}
-            alt="gallery"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      ))}
+        {images.map((img: string, i: number) => (
+          <div
+            key={i}
+            onClick={() => setActiveIndex(i)}
+            className="relative h-[110px] rounded-xl overflow-hidden bg-gray-100 cursor-pointer"
+          >
+            <img
+              src={toCDNImage(img, size)}
+              alt="gallery"
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        ))}
 
-    </div>
+      </div>
+
+      {activeIndex !== null && (
+        <GalleryViewer
+          images={images}
+          index={activeIndex}
+          onClose={() => setActiveIndex(null)}
+        />
+      )}
+    </>
   )
 }

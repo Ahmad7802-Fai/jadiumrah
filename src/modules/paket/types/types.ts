@@ -13,7 +13,7 @@ export interface PaketApi {
   short_description: string
 
   thumbnail: string
-
+  thumbnail_url?: string | null // 🔥 TAMBAH INI
   price_start_from: number
   price_label: string
   promo_label?: string | null
@@ -104,7 +104,7 @@ export interface Paket {
   name: string
   slug: string
 
-  image: string
+  image: string | null
   duration: string
   airline: string
 
