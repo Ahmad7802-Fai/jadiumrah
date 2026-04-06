@@ -1,5 +1,7 @@
 "use client"
 
+import { useImageSize } from "@/lib/useImageSize"
+import { toCDNImage } from "@/lib/image"
 import Image from "next/image"
 import Link from "next/link"
 import { Paket } from "../types/types"
@@ -12,6 +14,8 @@ export default function PaketCard({
   paket: Paket
   variant?: "default" | "compact"
 }) {
+  const size = useImageSize()
+
   const percent =
     paket.totalSeat > 0
       ? (paket.seat / paket.totalSeat) * 100
@@ -19,10 +23,10 @@ export default function PaketCard({
 
   const isLowSeat = paket.seat < 10
 
-  const imageSrc =
-    paket.image && paket.image.startsWith("http")
-      ? paket.image
-      : "/images/fallback.png"
+  // 🔥 FIX CDN IMAGE (DYNAMIC SIZE)
+  const imageSrc = paket.image
+    ? toCDNImage(paket.image, size)
+    : "/images/fallback.png"
 
   // =====================================================
   // 🔥 COMPACT MOBILE VERSION
@@ -34,7 +38,14 @@ export default function PaketCard({
 
           {/* IMAGE */}
           <div className="relative w-[95px] h-[72px] rounded-lg overflow-hidden shrink-0">
-            <Image src={imageSrc} alt={paket.name} fill className="object-cover" />
+            <Image
+              src={imageSrc}
+              alt={paket.name}
+              fill
+              className="object-cover"
+              sizes="95px"
+              quality={85}
+            />
 
             {(paket.promoLabel || paket.isPromo) && (
               <div className="absolute top-1 left-1">
@@ -118,6 +129,9 @@ export default function PaketCard({
             alt={paket.name}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            quality={90}
+            priority={false}
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
@@ -156,7 +170,7 @@ export default function PaketCard({
               />
             </div>
 
-            {/* 🔥 SEAT INFO */}
+            {/* SEAT INFO */}
             <div className={`mt-1 text-[10px] ${isLowSeat ? "text-red-500 font-medium" : "text-gray-500"}`}>
               {isLowSeat
                 ? `🔥 Sisa ${paket.seat} seat`
@@ -167,7 +181,6 @@ export default function PaketCard({
           {/* FOOTER */}
           <div className="mt-auto space-y-1">
 
-            {/* HEMAT */}
             {paket.savingLabel && (
               <div className="text-[10px] text-red-500">
                 {paket.savingLabel}
@@ -182,7 +195,6 @@ export default function PaketCard({
                   Mulai dari
                 </div>
 
-                {/* 🔥 ORIGINAL PRICE */}
                 {paket.originalPriceLabel && paket.isPromo && (
                   <div className="text-[11px] text-gray-400 line-through">
                     {paket.originalPriceLabel}

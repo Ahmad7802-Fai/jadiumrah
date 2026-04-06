@@ -8,8 +8,8 @@ export function mapPaket(item: PaketApi): Paket {
 
     // 🔥 FIX CDN IMAGE
     image: item.thumbnail_url
-    ? item.thumbnail_url.replace("/storage/", "/resize/") + "?w=600"
-    : "/images/fallback.png",
+      ? item.thumbnail_url.replace("https://cdn.jadiumrah.cloud", "")
+      : null,
 
     duration: item.duration_label,
     airline: item.airline,
