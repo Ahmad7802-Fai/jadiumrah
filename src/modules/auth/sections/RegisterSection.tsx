@@ -2,9 +2,8 @@ import RegisterForm from "../components/RegisterForm"
 
 export default function RegisterSection() {
   return (
-    <section className="px-4 py-6">
-      <h1 className="text-lg font-semibold mb-4">Daftar Jamaah</h1>
+    <div className="min-h-[calc(100vh-100px)] flex items-center justify-center px-4">
       <RegisterForm />
-    </section>
+    </div>
   )
 }

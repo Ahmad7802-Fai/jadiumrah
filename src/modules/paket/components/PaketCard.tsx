@@ -1,6 +1,5 @@
 "use client"
 
-import { useImageSize } from "@/lib/useImageSize"
 import { toCDNImage } from "@/lib/image"
 import Image from "next/image"
 import Link from "next/link"
@@ -14,8 +13,6 @@ export default function PaketCard({
   paket: Paket
   variant?: "default" | "compact"
 }) {
-  const size = useImageSize()
-
   const percent =
     paket.totalSeat > 0
       ? (paket.seat / paket.totalSeat) * 100
@@ -23,13 +20,13 @@ export default function PaketCard({
 
   const isLowSeat = paket.seat < 10
 
-  // 🔥 FIX CDN IMAGE (DYNAMIC SIZE)
+  // ✅ FIXED CDN SIZE (NO HOOK)
   const imageSrc = paket.image
-    ? toCDNImage(paket.image, size)
+    ? toCDNImage(paket.image, 800)
     : "/images/fallback.png"
 
   // =====================================================
-  // 🔥 COMPACT MOBILE VERSION
+  // 🔥 COMPACT MOBILE
   // =====================================================
   if (variant === "compact") {
     return (
@@ -42,9 +39,8 @@ export default function PaketCard({
               src={imageSrc}
               alt={paket.name}
               fill
-              className="object-cover"
               sizes="95px"
-              quality={85}
+              className="object-cover"
             />
 
             {(paket.promoLabel || paket.isPromo) && (
@@ -75,7 +71,6 @@ export default function PaketCard({
               />
             </div>
 
-            {/* SEAT */}
             <div className={`text-[9px] ${isLowSeat ? "text-red-500 font-medium" : "text-gray-400"}`}>
               {isLowSeat ? `🔥 Sisa ${paket.seat} seat` : `Sisa ${paket.seat} seat`}
             </div>
@@ -84,7 +79,6 @@ export default function PaketCard({
             <div className="flex justify-between items-end">
 
               <div className="leading-tight">
-
                 {paket.savingLabel && (
                   <div className="text-[9px] text-red-500">
                     {paket.savingLabel}
@@ -100,7 +94,6 @@ export default function PaketCard({
                 <div className="text-green-600 font-bold text-[10px]">
                   {formatRupiah(paket.price)}
                 </div>
-
               </div>
 
               <div className="text-[10px] bg-green-600 text-white px-2 py-1 rounded-md">
@@ -116,7 +109,7 @@ export default function PaketCard({
   }
 
   // =====================================================
-  // 🖥️ DESKTOP VERSION (UPGRADED)
+  // 🖥️ DESKTOP VERSION
   // =====================================================
   return (
     <Link href={`/paket/${paket.slug}`} className="block h-full">
@@ -128,10 +121,8 @@ export default function PaketCard({
             src={imageSrc}
             alt={paket.name}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, 33vw"
-            quality={90}
-            priority={false}
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
@@ -148,7 +139,6 @@ export default function PaketCard({
         {/* CONTENT */}
         <div className="flex flex-col flex-1 p-3 gap-2">
 
-          {/* META */}
           <div className="flex justify-between text-gray-500 text-[10px]">
             <span>{paket.duration}</span>
             <span className="truncate max-w-[120px]">
@@ -156,7 +146,6 @@ export default function PaketCard({
             </span>
           </div>
 
-          {/* TITLE */}
           <div className="font-semibold text-sm line-clamp-2 min-h-[36px]">
             {paket.name}
           </div>
@@ -170,7 +159,6 @@ export default function PaketCard({
               />
             </div>
 
-            {/* SEAT INFO */}
             <div className={`mt-1 text-[10px] ${isLowSeat ? "text-red-500 font-medium" : "text-gray-500"}`}>
               {isLowSeat
                 ? `🔥 Sisa ${paket.seat} seat`
@@ -189,7 +177,6 @@ export default function PaketCard({
 
             <div className="flex justify-between items-end">
 
-              {/* PRICE */}
               <div>
                 <div className="text-[10px] text-gray-400">
                   Mulai dari
@@ -206,7 +193,6 @@ export default function PaketCard({
                 </div>
               </div>
 
-              {/* BUTTON */}
               <div className="bg-green-600 text-white px-3 py-1.5 text-xs rounded-lg">
                 Detail
               </div>

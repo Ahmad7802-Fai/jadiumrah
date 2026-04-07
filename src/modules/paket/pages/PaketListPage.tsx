@@ -16,87 +16,61 @@ export default function PaketListPage({ pakets }: any) {
   const PER_PAGE = 6
   const safePakets = Array.isArray(pakets) ? pakets : []
 
-  // =====================================================
   // 🔍 SEARCH
-  // =====================================================
   const searched = safePakets.filter((item) => {
     if (!search) return true
     return item.name.toLowerCase().includes(search.toLowerCase())
   })
 
-  // =====================================================
   // 🎛️ FILTER
-  // =====================================================
   const filtered = searched.filter((item) => {
-    if (filters.departure_city && item.departure_city !== filters.departure_city) {
-      return false
-    }
-
-    if (filters.min_price && item.price < Number(filters.min_price)) {
-      return false
-    }
-
-    if (filters.max_price && item.price > Number(filters.max_price)) {
-      return false
-    }
-
+    if (filters.departure_city && item.departure_city !== filters.departure_city) return false
+    if (filters.min_price && item.price < Number(filters.min_price)) return false
+    if (filters.max_price && item.price > Number(filters.max_price)) return false
     return true
   })
 
-  // =====================================================
   // 🔥 SORT
-  // =====================================================
   const sorted = [...filtered].sort((a, b) => {
     if (sort === "termurah") return a.price - b.price
     if (sort === "termahal") return b.price - a.price
     return 0
   })
 
-  // =====================================================
   // 📄 PAGINATION
-  // =====================================================
   const start = (page - 1) * PER_PAGE
   const currentData = sorted.slice(start, start + PER_PAGE)
   const totalPage = Math.ceil(sorted.length / PER_PAGE)
 
   return (
-    <div
-      className="
-        max-w-md md:max-w-5xl
-        mx-auto w-full
+    <div className="max-w-md md:max-w-6xl lg:max-w-7xl mx-auto w-full px-3 md:px-4 py-3 md:py-6 space-y-3 md:space-y-5">
 
-        px-3 md:px-4
-        py-3 md:py-6
+      {/* ================= HEADER ================= */}
+      <div className="sticky top-[64px] z-30 bg-white/95 backdrop-blur px-2 py-2 space-y-2 border-b border-gray-100 rounded-b-xl">
 
-        space-y-3 md:space-y-5
-      "
-    >
-
-      {/* ================= HEADER SUPER COMPACT ================= */}
-      <div
-        className="
-          sticky top-[64px] z-30
-
-          bg-white/95 backdrop-blur
-
-          px-2 py-2
-          space-y-2
-
-          border-b border-gray-100
-          rounded-b-xl
-        "
-      >
+        {/* 🔥 MINI HERO */}
+        <div className="px-1">
+          <div className="rounded-xl px-3 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white shadow-sm">
+            <div className="text-[11px] opacity-90">
+              ✈️ 1000+ Jamaah Berangkat
+            </div>
+            <div className="text-sm font-semibold">
+              Pilih Paket Umrah Terbaik
+            </div>
+          </div>
+        </div>
 
         {/* 🔍 SEARCH */}
         <PaketSearch onChange={setSearch} />
 
         {/* 🎛️ FILTER + SORT */}
         <div className="flex items-center justify-between gap-2">
-
-          <PaketFilter onApply={(val) => {
-            setFilters(val)
-            setPage(1)
-          }} />
+          <PaketFilter
+            onApply={(val) => {
+              setFilters(val)
+              setPage(1)
+            }}
+          />
 
           <PaketSorting
             value={sort}
@@ -105,19 +79,18 @@ export default function PaketListPage({ pakets }: any) {
               setPage(1)
             }}
           />
-
         </div>
 
       </div>
 
       {/* ================= RESULT INFO ================= */}
       <div className="text-[10px] text-gray-400 px-1">
-        {sorted.length} paket
+        {sorted.length} paket ditemukan
       </div>
 
       {/* ================= LIST ================= */}
 
-      {/* 🔥 MOBILE (SUPER COMPACT LIST) */}
+      {/* 🔥 MOBILE */}
       <div className="flex flex-col gap-2 md:hidden">
         {currentData.map((item: any) => (
           <div key={item.id} className="scale-[0.98]">
@@ -127,7 +100,7 @@ export default function PaketListPage({ pakets }: any) {
       </div>
 
       {/* 🔥 DESKTOP GRID */}
-      <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
         {currentData.map((item: any) => (
           <PaketCard key={item.id} paket={item} />
         ))}

@@ -10,11 +10,7 @@ export default function LoginForm() {
   const router = useRouter()
   const { setUser } = useAuthStore()
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  })
-
+  const [form, setForm] = useState({ email: "", password: "" })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -25,16 +21,14 @@ export default function LoginForm() {
 
     try {
       const res = await authService.login(form)
-
-      if (!res?.token) throw new Error("Token tidak ada")
+      if (!res?.token) throw new Error()
 
       localStorage.setItem("token", res.token)
 
       const me = await authService.me()
       setUser(me.data)
 
-      router.push("/") // tetap di homepage
-
+      router.push("/")
     } catch (err: any) {
       setError(err?.response?.data?.message || "Login gagal")
     } finally {
@@ -45,48 +39,42 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
 
-      {/* ERROR */}
       {error && (
-        <div className="text-red-500 text-sm text-center">
+        <div className="text-red-500 text-xs text-center">
           {error}
         </div>
       )}
 
-      {/* EMAIL */}
       <input
         type="email"
         placeholder="Email"
         onChange={(e) => setForm({ ...form, email: e.target.value })}
-        className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none"
       />
 
-      {/* PASSWORD */}
       <input
         type="password"
         placeholder="Password"
         onChange={(e) => setForm({ ...form, password: e.target.value })}
-        className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none"
       />
 
-      {/* FORGOT */}
       <div className="text-right text-xs">
-        <Link href="/forgot-password" className="text-green-600 hover:underline">
+        <Link href="/forgot-password" className="text-green-600">
           Lupa password?
         </Link>
       </div>
 
-      {/* BUTTON */}
       <button
         disabled={loading}
-        className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-sm transition"
+        className="w-full bg-green-600 text-white py-2 rounded-lg text-sm"
       >
         {loading ? "Memproses..." : "Login"}
       </button>
 
-      {/* REGISTER */}
       <div className="text-center text-xs text-gray-500">
         Belum punya akun?{" "}
-        <Link href="/register" className="text-green-600 font-medium hover:underline">
+        <Link href="/register" className="text-green-600 font-medium">
           Daftar
         </Link>
       </div>

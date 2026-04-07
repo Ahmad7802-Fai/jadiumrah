@@ -1,10 +1,11 @@
 import LoginForm from "../components/LoginForm"
 
-export default function LoginSection() {
+export default function LoginPage() {
   return (
-    <section className="px-4 py-6">
-      <h1 className="text-lg font-semibold mb-4">Login Jamaah</h1>
-      <LoginForm />
-    </section>
+    <div className="min-h-[calc(100vh-100px)] flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow">
+        <LoginForm />
+      </div>
+    </div>
   )
 }
