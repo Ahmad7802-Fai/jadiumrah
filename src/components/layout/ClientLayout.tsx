@@ -12,7 +12,7 @@ export default function ClientLayout({
     <div className="min-h-screen bg-[#f5f7f4]">
       <Navbar />
 
-      <main className="pt-[60px] pb-[100px]">
+      <main className="pb-[100px]">
         {children}
       </main>
 

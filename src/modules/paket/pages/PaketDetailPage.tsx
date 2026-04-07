@@ -34,7 +34,7 @@ export default function PaketDetailPage({ paket, pakets }: any) {
       <div className="bg-gray-50 min-h-screen overflow-x-hidden">
 
         {/* HERO */}
-        <div className="relative w-full h-[190px] md:h-[320px] overflow-hidden">
+        <div className="relative w-full h-[200px] md:h-[320px] overflow-hidden">
 
           {/* 🔥 BLUR (HILANG SAAT LOADED) */}
           <img
