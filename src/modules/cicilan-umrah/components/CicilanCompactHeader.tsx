@@ -19,7 +19,7 @@ export default function CicilanCompactHeader() {
       className={`
         sticky
 
-        top-[calc(48px+env(safe-area-inset-top))]
+        top-[calc(58px+env(safe-area-inset-top))]
         md:top-[56px]
 
         z-30
