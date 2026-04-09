@@ -42,11 +42,9 @@ export default function PaketTabs({ paket }: any) {
     const left = el.offsetLeft
     const width = el.offsetWidth
 
-    // 🔥 smooth GPU
     indicator.style.width = `${width}px`
     indicator.style.transform = `translate3d(${left}px,0,0)`
 
-    // 🔥 center scroll (lebih stabil)
     const scrollTarget =
       left - container.clientWidth / 2 + width / 2
 
@@ -64,29 +62,26 @@ export default function PaketTabs({ paket }: any) {
         className="
           sticky top-[64px] z-[40]
 
-          bg-gray-50/95 backdrop-blur
-          border-b border-gray-100
+          bg-bg/95 backdrop-blur
+          border-b border-border
 
           py-1
         "
       >
         <div className="px-3">
 
+          {/* NAV WRAPPER */}
           <div
             ref={containerRef}
             className="
-              relative
-              flex gap-[4px]
+              relative flex gap-[4px]
 
               p-[3px]
-
-              bg-gray-100
+              bg-card
               rounded-lg
 
               overflow-x-auto
               scrollbar-hide
-
-              will-change-transform
             "
           >
 
@@ -100,9 +95,8 @@ export default function PaketTabs({ paket }: any) {
                 bg-white
                 rounded-md
 
-                shadow-[0_1px_6px_rgba(0,0,0,0.08)]
-
-                transition-all duration-300 ease-out
+                shadow-sm
+                transition-all duration-300
               "
             />
 
@@ -121,21 +115,19 @@ export default function PaketTabs({ paket }: any) {
                     relative z-10
                     shrink-0
 
-                    px-2 py-[4px]
+                    px-2 py-[5px]
                     rounded-md
 
-                    text-[10px]
-                    leading-none
+                    text-[11px]
                     font-medium
 
                     whitespace-nowrap
-
-                    transition-all duration-200
+                    transition
 
                     ${
                       isActive
-                        ? "text-green-600"
-                        : "text-gray-500 active:scale-95"
+                        ? "text-primary"
+                        : "text-text-soft active:scale-95"
                     }
                   `}
                 >

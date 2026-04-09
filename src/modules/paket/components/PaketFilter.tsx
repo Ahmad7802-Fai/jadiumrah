@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Button, Input } from "@/components"
 
 export default function PaketFilter({
   onApply,
@@ -15,7 +16,6 @@ export default function PaketFilter({
 
   const isActive = city || minPrice || maxPrice
 
-  // 🔥 LOCK SCROLL (ANTI LAG)
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden"
     else document.body.style.overflow = ""
@@ -37,18 +37,12 @@ export default function PaketFilter({
   return (
     <>
       {/* ================= BUTTON ================= */}
-      <button
+      <Button
+        size="sm"
         onClick={() => setOpen(true)}
         className={`
-          flex items-center gap-1
-
-          text-[10px]
-          px-2 py-1.5
-
-          rounded-full
-          border
-
-          transition
+          gap-1
+          rounded-full border
 
           ${
             isActive
@@ -58,7 +52,7 @@ export default function PaketFilter({
         `}
       >
         ⚙️ Filter
-      </button>
+      </Button>
 
       {/* ================= MODAL ================= */}
       {open && (
@@ -74,17 +68,11 @@ export default function PaketFilter({
           <div
             className="
               absolute bottom-0 left-0 right-0
-
-              bg-white
-              rounded-t-2xl
-
+              bg-white rounded-t-2xl
               px-3 pt-2 pb-3
-
               space-y-2
-
               max-h-[80vh]
               overflow-y-auto
-
               slide-up
             "
           >
@@ -109,7 +97,6 @@ export default function PaketFilter({
                     rounded-full
                     border
                     shrink-0
-
                     ${
                       city === c
                         ? "bg-green-600 text-white border-green-600"
@@ -135,57 +122,44 @@ export default function PaketFilter({
 
             {/* PRICE */}
             <div className="grid grid-cols-2 gap-1">
-              <input
+              <Input
                 placeholder="Min"
                 value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                className="border rounded-md px-2 py-1 text-[10px]"
+                onChange={(e: any) => setMinPrice(e.target.value)}
+                className="text-[10px] py-1"
               />
 
-              <input
+              <Input
                 placeholder="Max"
                 value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                className="border rounded-md px-2 py-1 text-[10px]"
+                onChange={(e: any) => setMaxPrice(e.target.value)}
+                className="text-[10px] py-1"
               />
             </div>
 
             {/* ACTION */}
             <div className="flex gap-1 pt-1">
 
-              <button
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => {
                   setCity("")
                   setMinPrice("")
                   setMaxPrice("")
                 }}
-                className="
-                  flex-1
-                  text-[10px]
-
-                  border border-gray-200
-                  rounded-md
-
-                  py-1
-                "
+                className="flex-1"
               >
                 Reset
-              </button>
+              </Button>
 
-              <button
+              <Button
+                size="sm"
                 onClick={handleApply}
-                className="
-                  flex-1
-                  text-[10px]
-
-                  bg-green-600 text-white
-                  rounded-md
-
-                  py-1
-                "
+                className="flex-1"
               >
                 Terapkan
-              </button>
+              </Button>
 
             </div>
 

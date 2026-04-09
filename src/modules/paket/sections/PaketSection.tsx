@@ -3,43 +3,52 @@
 import { useRouter } from "next/navigation"
 import PaketList from "../components/PaketList"
 
+import {
+  SectionBlock,
+  Button,
+} from "@/components"
+
 export default function PaketSection() {
   const router = useRouter()
 
   return (
-    <section className="relative z-20 pt-4 pb-6 md:pt-6 md:pb-10 bg-white rounded-t-3xl shadow-[0_-6px_20px_rgba(0,0,0,0.08)]">
+    <div
+      className="
+        relative z-20
+        bg-card
+        rounded-t-3xl
+        shadow-md
+        mt-6 md:mt-10
+      "
+    >
+
+      {/* GRADIENT */}
+      <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-black/10 to-transparent pointer-events-none" />
 
       {/* CONTAINER */}
-      <div className="max-w-6xl mx-auto px-3 md:px-6">
+      <div className="container">
 
-        {/* HEADER */}
-        <div className="flex items-center justify-between mb-3 md:mb-4">
-
-          <div className="leading-tight">
-            <h2 className="font-semibold text-[13px] md:text-lg">
-              Promo Umrah 🔥
-            </h2>
-            <p className="text-[10px] md:text-sm text-gray-500">
-              Harga terbaik bulan ini
-            </p>
+        <SectionBlock
+          title="Promo Umrah 🔥"
+          subtitle="Harga terbaik bulan ini"
+          className="py-section md:py-section-lg"
+          action={
+            <Button
+              size="sm"
+              variant="soft"
+              onClick={() => router.push("/paket")}
+            >
+              Lihat Semua
+            </Button>
+          }
+        >
+          <div className="space-y-content md:space-y-content-lg">
+            <PaketList promoOnly />
           </div>
-
-          <button
-            onClick={() => router.push("/paket")}
-            className="text-[10px] md:text-sm text-green-600 font-medium px-2 py-1 rounded-md hover:bg-green-50 active:scale-95 transition"
-          >
-            Lihat Semua
-          </button>
-
-        </div>
-
-        {/* LIST */}
-        <div className="space-y-3 md:space-y-4">
-          <PaketList promoOnly />
-        </div>
+        </SectionBlock>
 
       </div>
 
-    </section>
+    </div>
   )
 }

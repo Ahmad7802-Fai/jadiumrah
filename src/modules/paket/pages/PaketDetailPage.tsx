@@ -3,9 +3,13 @@
 import { useState } from "react"
 import { toCDNImage } from "@/lib/image"
 import { useImageSize } from "@/lib/useImageSize"
+
 import PaketTabs from "../components/PaketTabs"
 import PaketRekomendasi from "@/modules/paket/components/PaketRekomendasi"
+
 import MobileCTA from "@/components/ui/MobileCTA"
+import { Button } from "@/components/ui"
+
 import { formatRupiah } from "@/lib/format"
 
 export default function PaketDetailPage({ paket, pakets }: any) {
@@ -13,7 +17,7 @@ export default function PaketDetailPage({ paket, pakets }: any) {
 
   if (!paket) {
     return (
-      <div className="p-4 text-center text-gray-500 text-sm">
+      <div className="p-4 text-center text-text-soft text-sm">
         Paket tidak ditemukan
       </div>
     )
@@ -22,7 +26,7 @@ export default function PaketDetailPage({ paket, pakets }: any) {
   const size = useImageSize()
 
   const imageSrc = toCDNImage(paket.image, size)
-  const blurSrc = toCDNImage(paket.image, 10) // jangan terlalu kecil
+  const blurSrc = toCDNImage(paket.image, 20)
 
   const rekomendasi =
     Array.isArray(pakets)
@@ -31,27 +35,32 @@ export default function PaketDetailPage({ paket, pakets }: any) {
 
   return (
     <>
-      <div className="bg-gray-50 min-h-screen overflow-x-hidden">
+      <div className="bg-bg min-h-screen overflow-x-hidden">
 
-        {/* HERO */}
+        {/* ================= HERO ================= */}
         <div className="relative w-full h-[200px] md:h-[320px] overflow-hidden">
 
-          {/* 🔥 BLUR (HILANG SAAT LOADED) */}
+          {/* BLUR */}
           <img
             src={blurSrc}
-            className={`absolute inset-0 w-full h-full object-cover scale-110 blur-xl transition-opacity duration-500 ${
-              loaded ? "opacity-0" : "opacity-100"
-            }`}
+            className={`
+              absolute inset-0 w-full h-full object-cover
+              scale-110 blur-xl
+              transition-opacity duration-500
+              ${loaded ? "opacity-0" : "opacity-100"}
+            `}
           />
 
-          {/* 🔥 MAIN IMAGE */}
+          {/* MAIN */}
           <img
             src={imageSrc}
             alt={paket.name}
             onLoad={() => setLoaded(true)}
-            className={`w-full h-full object-cover transition-opacity duration-700 ${
-              loaded ? "opacity-100" : "opacity-0"
-            }`}
+            className={`
+              w-full h-full object-cover
+              transition-opacity duration-700
+              ${loaded ? "opacity-100" : "opacity-0"}
+            `}
           />
 
           {/* OVERLAY */}
@@ -59,7 +68,7 @@ export default function PaketDetailPage({ paket, pakets }: any) {
 
           {/* TEXT */}
           <div className="absolute bottom-10 left-3 right-3 text-white">
-            <h1 className="text-[14px] md:text-xl font-semibold line-clamp-2">
+            <h1 className="text-sm md:text-xl font-semibold line-clamp-2">
               {paket.name}
             </h1>
 
@@ -67,35 +76,45 @@ export default function PaketDetailPage({ paket, pakets }: any) {
               {paket.duration} • {paket.airline}
             </p>
           </div>
-
         </div>
 
-        {/* CONTENT */}
+        {/* ================= CONTENT ================= */}
         <div className="max-w-4xl mx-auto px-3 mt-3 md:mt-5 pb-[130px] md:pb-8">
 
           <div className="grid md:grid-cols-3 gap-3 md:gap-5">
 
+            {/* LEFT */}
             <div className="md:col-span-2 space-y-4 md:space-y-6">
               <PaketTabs paket={paket} />
+
               {rekomendasi.length > 0 && (
                 <PaketRekomendasi pakets={rekomendasi} />
               )}
             </div>
 
+            {/* RIGHT */}
             <div className="hidden md:block">
               <div className="sticky top-[70px] space-y-3">
 
-                <div className="bg-white rounded-xl shadow-sm p-3 space-y-2">
-                  <div className="text-[11px] text-gray-500">Mulai dari</div>
-                  <div className="text-lg font-bold text-green-600">
+                {/* PRICE CARD */}
+                <div className="bg-card border border-border rounded-xl shadow-sm p-3 space-y-2">
+
+                  <div className="text-xs text-text-soft">
+                    Mulai dari
+                  </div>
+
+                  <div className="text-lg font-bold text-primary">
                     {formatRupiah(paket.price || 0)}
                   </div>
-                  <button className="w-full bg-green-600 text-white py-2 rounded-lg text-xs font-semibold">
+
+                  <Button className="w-full">
                     Booking
-                  </button>
+                  </Button>
+
                 </div>
 
-                <div className="bg-white rounded-lg shadow-sm p-2 text-[11px] text-gray-600 space-y-1">
+                {/* INFO CARD */}
+                <div className="bg-card border border-border rounded-lg shadow-sm p-2 text-xs text-text-soft space-y-1">
                   <div>✈️ {paket.airline}</div>
                   <div>🕋 {paket.duration}</div>
                 </div>
@@ -107,6 +126,7 @@ export default function PaketDetailPage({ paket, pakets }: any) {
         </div>
       </div>
 
+      {/* ================= MOBILE CTA ================= */}
       <MobileCTA price={paket.price || 0} />
     </>
   )

@@ -6,6 +6,8 @@ import Link from "next/link"
 import { Paket } from "../types/types"
 import { formatRupiah } from "@/lib/format"
 
+import { Button, Badge } from "@/components"
+
 export default function PaketCard({
   paket,
   variant = "default",
@@ -20,13 +22,12 @@ export default function PaketCard({
 
   const isLowSeat = paket.seat < 10
 
-  // ✅ FIXED CDN SIZE (NO HOOK)
   const imageSrc = paket.image
     ? toCDNImage(paket.image, 800)
     : "/images/fallback.png"
 
   // =====================================================
-  // 🔥 COMPACT MOBILE
+  // 🔥 MOBILE
   // =====================================================
   if (variant === "compact") {
     return (
@@ -45,9 +46,9 @@ export default function PaketCard({
 
             {(paket.promoLabel || paket.isPromo) && (
               <div className="absolute top-1 left-1">
-                <div className="bg-red-500 text-white text-[8px] px-1.5 py-[2px] rounded-full">
+                <Badge size="xs">
                   🔥 {paket.promoLabel || `${paket.discount}%`}
-                </div>
+                </Badge>
               </div>
             )}
           </div>
@@ -96,9 +97,9 @@ export default function PaketCard({
                 </div>
               </div>
 
-              <div className="text-[10px] bg-green-600 text-white px-2 py-1 rounded-md">
+              <Button size="sm">
                 Detail
-              </div>
+              </Button>
 
             </div>
 
@@ -109,7 +110,7 @@ export default function PaketCard({
   }
 
   // =====================================================
-  // 🖥️ DESKTOP VERSION
+  // 🖥️ DESKTOP
   // =====================================================
   return (
     <Link href={`/paket/${paket.slug}`} className="block h-full">
@@ -129,9 +130,9 @@ export default function PaketCard({
 
           {(paket.promoLabel || paket.isPromo) && (
             <div className="absolute top-2 left-2">
-              <div className="bg-red-500 text-white text-[10px] px-2 py-1 rounded-full font-semibold shadow">
+              <Badge size="sm">
                 🔥 {paket.promoLabel || `${paket.discount}%`}
-              </div>
+              </Badge>
             </div>
           )}
         </div>
@@ -193,9 +194,9 @@ export default function PaketCard({
                 </div>
               </div>
 
-              <div className="bg-green-600 text-white px-3 py-1.5 text-xs rounded-lg">
+              <Button size="md">
                 Detail
-              </div>
+              </Button>
 
             </div>
 

@@ -9,9 +9,9 @@ export default function Faq() {
   return (
     <section className="space-y-3">
 
-      <h2 className="text-center text-sm md:text-lg font-semibold">
+      {/* <h2 className="text-center text-sm md:text-lg font-semibold">
         FAQ Tabungan
-      </h2>
+      </h2> */}
 
       <div className="space-y-2">
 

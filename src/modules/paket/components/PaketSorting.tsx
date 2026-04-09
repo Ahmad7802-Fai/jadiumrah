@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Button } from "@/components/ui"
 
 const OPTIONS = [
   { label: "Termurah", value: "termurah" },
@@ -19,18 +20,14 @@ export default function PaketSorting({
   return (
     <div className="relative">
 
-      {/* ================= MOBILE (SUPER COMPACT) ================= */}
+      {/* ================= MOBILE ================= */}
       <div
         className="
           flex md:hidden
-
           bg-gray-100
           rounded-full
-
           p-[2px]
           gap-[2px]
-
-          shadow-inner
         "
       >
         {OPTIONS.map((opt) => {
@@ -41,29 +38,19 @@ export default function PaketSorting({
               key={opt.value}
               onClick={() => onChange(opt.value)}
               className={`
-                relative
-
                 px-3 py-[6px]
                 text-[10px]
                 rounded-full
-
-                transition-all duration-200
+                transition
 
                 ${
                   active
-                    ? "bg-white text-green-600 shadow-sm"
+                    ? "bg-white text-primary shadow-sm"
                     : "text-gray-500"
                 }
-
-                active:scale-95
               `}
             >
               {opt.label}
-
-              {/* INDICATOR DOT */}
-              {active && (
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-green-600 rounded-full" />
-              )}
             </button>
           )
         })}
@@ -72,67 +59,54 @@ export default function PaketSorting({
       {/* ================= DESKTOP ================= */}
       <div className="hidden md:block">
 
-        <button
+        {/* BUTTON UI */}
+        <Button
+          size="sm"
+          variant="outline"
           onClick={() => setOpen(!open)}
-          className="
-            flex items-center gap-2
-
-            border border-gray-200
-            bg-white
-
-            px-3 py-2
-            rounded-lg
-
-            text-sm
-
-            shadow-sm
-            hover:bg-gray-50
-
-            active:scale-95
-            transition
-          "
+          className="flex items-center gap-2"
         >
           🔽 {OPTIONS.find(o => o.value === value)?.label}
-        </button>
+        </Button>
 
+        {/* DROPDOWN */}
         {open && (
           <div
             className="
               absolute right-0 mt-2
-
               bg-white
               border border-gray-100
               rounded-xl
-
-              shadow-[0_10px_30px_rgba(0,0,0,0.1)]
-
+              shadow-lg
               z-50
               overflow-hidden
               min-w-[160px]
             "
           >
-            {OPTIONS.map((opt) => (
-              <div
-                key={opt.value}
-                onClick={() => {
-                  onChange(opt.value)
-                  setOpen(false)
-                }}
-                className={`
-                  px-3 py-2 text-sm cursor-pointer
+            {OPTIONS.map((opt) => {
+              const active = value === opt.value
 
-                  hover:bg-gray-50
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => {
+                    onChange(opt.value)
+                    setOpen(false)
+                  }}
+                  className={`
+                    w-full text-left px-3 py-2 text-sm transition
 
-                  ${
-                    value === opt.value
-                      ? "text-green-600 font-medium"
-                      : "text-gray-600"
-                  }
-                `}
-              >
-                {opt.label}
-              </div>
-            ))}
+                    ${
+                      active
+                        ? "bg-green-50 text-primary font-medium"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }
+                  `}
+                >
+                  {opt.label}
+                </button>
+              )
+            })}
           </div>
         )}
 

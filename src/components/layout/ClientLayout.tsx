@@ -1,7 +1,6 @@
 "use client"
 
-import Navbar from "./Navbar"
-import BottomNav from "./BottomNav"
+import { Navbar, BottomNav } from "@/components"
 import { usePathname } from "next/navigation"
 
 export default function ClientLayout({
@@ -13,15 +12,25 @@ export default function ClientLayout({
   const isHome = pathname === "/"
 
   return (
-    <div className="min-h-screen bg-[#f5f7f4]">
+    <div className="min-h-screen bg-bg">
 
+      {/* NAVBAR */}
       <Navbar />
 
-      {/* 🔥 CONDITIONAL OFFSET */}
-      <main className={`${isHome ? "" : "pt-[var(--nav-h)]"} pb-[100px]`}>
+      {/* MAIN CONTENT */}
+      <main
+        className={`
+          min-h-screen
+
+          ${isHome ? "" : "pt-[var(--nav-h)]"}
+
+          pb-[90px] md:pb-0
+        `}
+      >
         {children}
       </main>
 
+      {/* BOTTOM NAV */}
       <BottomNav />
 
     </div>

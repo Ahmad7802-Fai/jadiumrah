@@ -32,9 +32,9 @@ export default function Benefit() {
   return (
     <section className="space-y-6">
 
-      <h2 className="text-center text-sm md:text-xl font-semibold">
+      {/* <h2 className="text-center text-sm md:text-xl font-semibold">
         Keuntungan Tabungan Umrah
-      </h2>
+      </h2> */}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
 

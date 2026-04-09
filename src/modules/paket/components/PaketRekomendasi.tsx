@@ -12,7 +12,7 @@ export default function PaketRekomendasi({ pakets }: any) {
   const [active, setActive] = useState(0)
   const [isInteracting, setIsInteracting] = useState(false)
 
-  // ================= SCROLL DETECTOR =================
+  // ================= SCROLL =================
   const handleScroll = () => {
     const container = scrollRef.current
     if (!container) return
@@ -62,28 +62,31 @@ export default function PaketRekomendasi({ pakets }: any) {
   return (
     <section
       className="
-        mt-4
-        bg-white rounded-2xl
-        border border-gray-100
+        mt-4 md:mt-6
+
+        bg-card
+        rounded-2xl
+        border border-border
         shadow-sm
 
-        p-3
+        p-3 md:p-4
         space-y-3
-        isolate
       "
     >
       {/* ================= HEADER ================= */}
       <div className="flex justify-between items-center">
-        <h2 className="text-sm font-bold flex items-center gap-1">
+
+        <h2 className="text-sm md:text-base font-semibold flex items-center gap-1">
           🔥 Rekomendasi
         </h2>
 
-        <span className="text-[11px] text-gray-400">
+        <span className="text-[11px] md:text-xs text-text-soft">
           Pilihan terbaik
         </span>
+
       </div>
 
-      {/* ================= SLIDER (ALL DEVICE) ================= */}
+      {/* ================= SLIDER ================= */}
       <div className="space-y-2">
 
         <div
@@ -95,7 +98,6 @@ export default function PaketRekomendasi({ pakets }: any) {
             flex gap-3 overflow-x-auto
             snap-x snap-mandatory
             scrollbar-hide
-
             px-1
           "
         >
@@ -106,19 +108,17 @@ export default function PaketRekomendasi({ pakets }: any) {
               <div
                 key={item.id}
                 className={`
-                  snap-start
-                  shrink-0
+                  snap-start shrink-0
 
-                  /* 🔥 MOBILE */
-                  min-w-[55%]
-                  max-w-[75%]
-
-                  /* 🔥 DESKTOP */
-                  md:min-w-[240px]
-                  md:max-w-[240px]
+                  min-w-[55%] max-w-[75%]
+                  md:min-w-[240px] md:max-w-[240px]
 
                   transition-all duration-300
-                  ${isActive ? "scale-100" : "scale-[0.96] opacity-90"}
+                  ${
+                    isActive
+                      ? "scale-100"
+                      : "scale-[0.96] opacity-90"
+                  }
                 `}
               >
                 <PaketCard paket={item} />
@@ -134,9 +134,11 @@ export default function PaketRekomendasi({ pakets }: any) {
               key={i}
               className={`
                 h-1 rounded-full transition-all duration-300
-                ${active === i
-                  ? "w-3 bg-green-600"
-                  : "w-1 bg-gray-300"}
+                ${
+                  active === i
+                    ? "w-4 bg-primary"
+                    : "w-1 bg-gray-300"
+                }
               `}
             />
           ))}

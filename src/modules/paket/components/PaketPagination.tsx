@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@/components/ui"
+
 interface Props {
   page: number
   totalPage: number
@@ -17,51 +19,42 @@ export default function PaketPagination({
     <div className="flex justify-center items-center gap-2 mt-6">
 
       {/* PREV */}
-      <button
+      <Button
+        size="sm"
+        variant="outline"
         onClick={() => onChange(page - 1)}
         disabled={page === 1}
-        className="
-          px-3 py-1 rounded-lg text-sm
-          bg-gray-100 disabled:opacity-40
-        "
       >
         ←
-      </button>
+      </Button>
 
       {/* NUMBER */}
       {Array.from({ length: totalPage }).map((_, i) => {
         const p = i + 1
+        const active = page === p
 
         return (
-          <button
+          <Button
             key={p}
+            size="sm"
+            variant={active ? "primary" : "outline"}
             onClick={() => onChange(p)}
-            className={`
-              px-3 py-1 rounded-lg text-sm
-              transition
-              ${
-                page === p
-                  ? "bg-green-600 text-white"
-                  : "bg-gray-100 hover:bg-gray-200"
-              }
-            `}
           >
             {p}
-          </button>
+          </Button>
+
         )
       })}
 
       {/* NEXT */}
-      <button
+      <Button
+        size="sm"
+        variant="outline"
         onClick={() => onChange(page + 1)}
         disabled={page === totalPage}
-        className="
-          px-3 py-1 rounded-lg text-sm
-          bg-gray-100 disabled:opacity-40
-        "
       >
         →
-      </button>
+      </Button>
 
     </div>
   )

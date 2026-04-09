@@ -1,17 +1,75 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* =====================================================
-   RESET & BASE
+   🔥 ROOT DESIGN SYSTEM (SOURCE OF TRUTH)
 ===================================================== */
 :root {
-  --nav-h: calc(48px + env(safe-area-inset-top));
+  /* =============================
+     LAYOUT
+  ============================= */
+  --nav-h: 56px;
+
+  /* =============================
+     SPACING
+  ============================= */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  --space-page-top: var(--space-3);
+  --space-section: var(--space-4);
+  --space-section-lg: var(--space-6);
+
+  /* =============================
+     COLORS
+  ============================= */
+  --color-primary: #16a34a;
+  --color-primary-light: #22c55e;
+  --color-primary-soft: #dcfce7;
+
+  --color-bg: #f5f7f4;
+  --color-card: #ffffff;
+
+  --color-text: #111827;
+  --color-text-soft: #6b7280;
+
+  --color-border: #e5e7eb;
+
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  /* =============================
+     TYPOGRAPHY
+  ============================= */
+  --font-xs: 10px;
+  --font-sm: 12px;
+  --font-md: 14px;
+  --font-lg: 16px;
+  --font-xl: 20px;
+
+  /* =============================
+     RADIUS
+  ============================= */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  /* =============================
+     SHADOW
+  ============================= */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 6px 20px rgba(0,0,0,0.08);
 }
 
-@media (min-width: 768px) {
-  :root {
-    --nav-h: 56px;
-  }
-}
+/* =====================================================
+   🔥 BASE RESET (SAFE)
+===================================================== */
 
 *,
 *::before,
@@ -20,62 +78,55 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html {
+html,
+body {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
 }
-
-/* =====================================================
-   BODY (MOBILE SAFE)
-===================================================== */
 
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  /* 🔥 PENTING: JANGAN clip */
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--font-md);
 
-  position: relative;
-  touch-action: pan-y;
-
-  /* 🔥 smooth rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* 🔥 scroll behavior aman mobile */
-  overscroll-behavior-x: none;
-
-  /* 🔥 prevent layout shift */
   text-rendering: optimizeLegibility;
 }
 
+.heading-1 {
+  @apply text-h1 md:text-[32px];
+}
+
+.heading-2 {
+  @apply text-h2 md:text-[24px];
+}
+
+.heading-3 {
+  @apply text-h3 md:text-[18px];
+}
+
 /* =====================================================
-   ROOT APP FIX (ANTI BUG FIXED POSITION)
+   🔥 ROOT FIX (ANTI OVERFLOW BUG)
 ===================================================== */
 
-/* 🔥 WAJIB untuk stabilkan fixed element */
 #__next {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
 }
-* {
-  max-width: 100%;
-}
 
-.flex {
+/* ❗ FIX flex bug TANPA override Tailwind */
+.flex > * {
   min-width: 0;
 }
 
-.scroll-x {
-  max-width: 100%;
-  overflow-x: auto;
-}
 /* =====================================================
-   IMAGE
+   🔥 MEDIA
 ===================================================== */
 
 img,
@@ -88,7 +139,7 @@ svg {
 }
 
 /* =====================================================
-   FORM RESET
+   🔥 FORM RESET
 ===================================================== */
 
 input,
@@ -99,16 +150,14 @@ select {
 }
 
 /* =====================================================
-   SCROLL SYSTEM (MOBILE FRIENDLY)
+   🔥 SCROLL SYSTEM
 ===================================================== */
 
 .scroll-x {
   display: flex;
   overflow-x: auto;
-
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-
   touch-action: pan-x;
 }
 
@@ -117,24 +166,14 @@ select {
   -webkit-overflow-scrolling: touch;
 }
 
-/* =====================================================
-   HIDE SCROLLBAR
-===================================================== */
-
-.no-scrollbar::-webkit-scrollbar,
-.scrollbar-hide::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
-.no-scrollbar,
-.scrollbar-hide {
+.no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
-/* =====================================================
-   SNAP SCROLL
-===================================================== */
 
 .snap-x {
   scroll-snap-type: x mandatory;
@@ -145,7 +184,7 @@ select {
 }
 
 /* =====================================================
-   SAFE AREA (IPHONE NOTCH SUPPORT)
+   🔥 SAFE AREA (MOBILE)
 ===================================================== */
 
 .pb-safe {
@@ -156,42 +195,91 @@ select {
   padding-top: calc(env(safe-area-inset-top) + 8px);
 }
 
-.pl-safe {
-  padding-left: env(safe-area-inset-left);
+/* =====================================================
+   🔥 CARD SYSTEM (KEEP)
+===================================================== */
+
+/* .card {
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0,0,0,0.04);
+
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.04),
+    0 2px 6px rgba(0,0,0,0.02);
+
+  transition: all 0.2s ease;
 }
 
-.pr-safe {
-  padding-right: env(safe-area-inset-right);
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 28px rgba(0,0,0,0.06),
+    0 4px 10px rgba(0,0,0,0.03);
+}
+
+.card-compact {
+  padding: var(--space-3);
+}
+
+.card-normal {
+  padding: var(--space-4);
+} */
+
+/* =====================================================
+   🔥 TEXT SYSTEM
+===================================================== */
+
+.text-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.text-sub {
+  font-size: var(--font-sm);
+  color: var(--color-text-soft);
+}
+
+.text-small {
+  font-size: var(--font-xs);
+  color: var(--color-text-soft);
 }
 
 /* =====================================================
-   FIXED ELEMENT SAFETY (CTA & NAV)
+   🔥 SECTION SYSTEM
 ===================================================== */
 
-/* 🔥 anti bug fixed di mobile */
-.fixed-safe {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  /* prevent weird stacking bug */
-  transform: translateZ(0);
-  will-change: transform;
+.page {
+  padding-top: calc(var(--nav-h) + var(--space-page-top));
 }
 
-/* =====================================================
-   CONTAINER APP
-===================================================== */
-
-.container-app {
+.container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
 }
 
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.section-lg {
+  gap: var(--space-section-lg);
+}
+
+.page-container {
+  @apply px-page md:px-page-lg;
+}
+
+.section-block {
+  @apply py-section md:py-section-lg;
+}
 /* =====================================================
-   TEXT TRUNCATE (SAFE)
+   🔥 UTILITIES
 ===================================================== */
 
 .line-clamp-1 {
@@ -209,25 +297,11 @@ select {
 }
 
 /* =====================================================
-   TOUCH IMPROVEMENT
+   🔥 ANIMATION
 ===================================================== */
 
-button,
-a {
-  touch-action: manipulation;
-}
-
-/* =====================================================
-   PERFORMANCE BOOST
-===================================================== */
-
-/* GPU acceleration untuk animasi */
 .will-change {
   will-change: transform, opacity;
-}
-
-.scroll-x-fix {
-  transform: translateZ(0);
 }
 
 @keyframes slideUp {
@@ -244,12 +318,3 @@ a {
 .slide-up {
   animation: slideUp 0.2s ease;
 }
-/* =====================================================
-   OPTIONAL: DEBUG (AKTIFKAN SAAT BUTUH)
-===================================================== */
-
-/*
-* {
-  outline: 1px solid red;
-}
-*/

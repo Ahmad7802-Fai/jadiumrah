@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { baseMenus } from "./menu-data"
 
@@ -8,7 +8,7 @@ export default function ServiceMenu() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
 
-  // ================= TRACK CENTER =================
+  // ================= AUTO DETECT ACTIVE =================
   const handleScroll = () => {
     const el = scrollRef.current
     if (!el) return
@@ -33,13 +33,36 @@ export default function ServiceMenu() {
     setActiveIndex(closest)
   }
 
-  // ================= SCROLL ARROW =================
+  // ================= AUTO CENTER =================
+  const scrollToIndex = (index: number) => {
+    const el = scrollRef.current
+    if (!el) return
+
+    const child = el.children[index] as HTMLElement
+    if (!child) return
+
+    const offset =
+      child.offsetLeft -
+      el.offsetWidth / 2 +
+      child.offsetWidth / 2
+
+    el.scrollTo({
+      left: offset,
+      behavior: "smooth",
+    })
+  }
+
+  useEffect(() => {
+    scrollToIndex(activeIndex)
+  }, [activeIndex])
+
+  // ================= DESKTOP ARROW =================
   const scroll = (dir: "left" | "right") => {
     const el = scrollRef.current
     if (!el) return
 
     el.scrollBy({
-      left: dir === "left" ? -220 : 220,
+      left: dir === "left" ? -260 : 260,
       behavior: "smooth",
     })
   }
@@ -54,8 +77,8 @@ export default function ServiceMenu() {
           ref={scrollRef}
           onScroll={handleScroll}
           className="
-            flex gap-2 overflow-x-auto no-scrollbar
-            px-3
+            flex gap-content overflow-x-auto no-scrollbar
+            px-content py-content
             snap-x snap-mandatory
           "
         >
@@ -70,62 +93,42 @@ export default function ServiceMenu() {
                 className="shrink-0 snap-center"
               >
                 <div
+                  onClick={() => setActiveIndex(i)}
                   className={`
                     flex flex-col items-center justify-center
-
-                    w-[64px]
-                    py-2
-
+                    w-[64px] py-2
                     transition-all duration-300
-
                     ${
                       active
                         ? "scale-105 opacity-100"
                         : "scale-90 opacity-60"
                     }
-
-                    active:scale-90
                   `}
                 >
                   {/* ICON */}
                   <div
                     className={`
-                      w-10 h-10
-                      rounded-2xl
-
+                      w-10 h-10 rounded-xl
                       flex items-center justify-center
-
                       ${item.bg}
-
-                      backdrop-blur
-                      shadow-sm
-
-                      transition-all duration-300
-
                       ${
                         active
-                          ? "shadow-md"
-                          : "shadow-none"
+                          ? "shadow-md ring-2 ring-primary-soft"
+                          : ""
                       }
                     `}
                   >
-                    <Icon
-                      size={18}
-                      className={item.iconColor}
-                    />
+                    <Icon size={18} className={item.iconColor} />
                   </div>
 
                   {/* TEXT */}
                   <div
                     className={`
-                      mt-1 text-[9px] text-center leading-tight
-
-                      transition-all duration-300
-
+                      mt-1 text-small text-center
                       ${
                         active
-                          ? "text-gray-900 font-medium"
-                          : "text-gray-400"
+                          ? "text-text font-medium"
+                          : "text-text-soft"
                       }
                     `}
                   >
@@ -137,13 +140,14 @@ export default function ServiceMenu() {
           })}
         </div>
 
-        {/* INDICATOR (APPLE STYLE MINIMAL) */}
+        {/* INDICATOR */}
         <div className="flex justify-center mt-2">
-          <div className="h-[3px] w-10 bg-gray-200 rounded-full overflow-hidden">
+          <div className="relative h-[3px] w-16 bg-border rounded-full overflow-hidden">
             <div
-              className="h-full bg-green-600 transition-all duration-300"
+              className="absolute top-0 left-0 h-full bg-primary transition-all duration-300"
               style={{
-                width: `${(activeIndex + 1) * 20}%`,
+                width: `${100 / baseMenus.length}%`,
+                transform: `translateX(${activeIndex * 100}%)`,
               }}
             />
           </div>
@@ -154,120 +158,118 @@ export default function ServiceMenu() {
       {/* ================= DESKTOP ================= */}
       <div className="hidden md:block relative">
 
-        {/* LEFT */}
-        <button
-          onClick={() => scroll("left")}
-          className="
-            absolute left-0 top-1/2 -translate-y-1/2 z-10
+        <div className="max-w-5xl mx-auto relative px-section">
 
-            w-9 h-9 rounded-full
-            bg-white/80 backdrop-blur
+          {/* GRADIENT EDGE */}
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-bg to-transparent z-[5]" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-bg to-transparent z-[5]" />
 
-            border border-gray-200
+          {/* LEFT ARROW */}
+          <button
+            onClick={() => scroll("left")}
+            className="
+              absolute -left-6 top-1/2 -translate-y-1/2 z-10
+              w-9 h-9 rounded-full
+              bg-card/90 backdrop-blur
+              border border-border
+              flex items-center justify-center
+              shadow-sm hover:scale-105 transition
+            "
+          >
+            ←
+          </button>
 
-            flex items-center justify-center
+          {/* RIGHT ARROW */}
+          <button
+            onClick={() => scroll("right")}
+            className="
+              absolute -right-6 top-1/2 -translate-y-1/2 z-10
+              w-9 h-9 rounded-full
+              bg-card/90 backdrop-blur
+              border border-border
+              flex items-center justify-center
+              shadow-sm hover:scale-105 transition
+            "
+          >
+            →
+          </button>
 
-            shadow-sm
-            hover:scale-105
-            transition
-          "
-        >
-          ←
-        </button>
+          {/* SCROLL AREA */}
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="
+              overflow-x-auto no-scrollbar
+              px-12 py-section
+            "
+          >
 
-        {/* RIGHT */}
-        <button
-          onClick={() => scroll("right")}
-          className="
-            absolute right-0 top-1/2 -translate-y-1/2 z-10
+            <div className="flex justify-center w-full">
 
-            w-9 h-9 rounded-full
-            bg-white/80 backdrop-blur
+              <div className="flex gap-section snap-x snap-mandatory">
 
-            border border-gray-200
+                {baseMenus.map((item, i) => {
+                  const Icon = item.icon
+                  const active = i === activeIndex
 
-            flex items-center justify-center
+                  return (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      className="shrink-0 snap-center"
+                    >
+                      <div
+                        onClick={() => setActiveIndex(i)}
+                        className={`
+                          flex flex-col items-center
+                          w-[88px]
+                          transition-all duration-300
+                          ${
+                            active
+                              ? "scale-105 opacity-100"
+                              : "scale-95 opacity-60 hover:opacity-100"
+                          }
+                        `}
+                      >
+                        {/* ICON */}
+                        <div
+                          className={`
+                            w-12 h-12 rounded-xl
+                            flex items-center justify-center
+                            ${item.bg}
+                            ${
+                              active
+                                ? "shadow-md ring-2 ring-primary-soft"
+                                : ""
+                            }
+                          `}
+                        >
+                          <Icon size={20} className={item.iconColor} />
+                        </div>
 
-            shadow-sm
-            hover:scale-105
-            transition
-          "
-        >
-          →
-        </button>
+                        {/* TEXT */}
+                        <div
+                          className={`
+                            text-caption mt-2 text-center
+                            ${
+                              active
+                                ? "text-text font-medium"
+                                : "text-text-soft"
+                            }
+                          `}
+                        >
+                          {item.title}
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
 
-        <div
-          ref={scrollRef}
-          onScroll={handleScroll}
-          className="
-            flex gap-5 overflow-x-auto no-scrollbar
+              </div>
 
-            px-12 py-3
+            </div>
+          </div>
 
-            snap-x snap-mandatory
-          "
-        >
-          {baseMenus.map((item, i) => {
-            const Icon = item.icon
-            const active = i === activeIndex
-
-            return (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="shrink-0 snap-center"
-              >
-                <div
-                  className={`
-                    flex flex-col items-center
-
-                    w-[88px]
-
-                    transition-all duration-300
-
-                    ${
-                      active
-                        ? "scale-105 opacity-100"
-                        : "scale-95 opacity-60"
-                    }
-                  `}
-                >
-                  <div
-                    className={`
-                      w-12 h-12 rounded-2xl
-                      flex items-center justify-center
-
-                      ${item.bg}
-
-                      transition-all duration-300
-
-                      ${
-                        active
-                          ? "shadow-md"
-                          : "shadow-none"
-                      }
-                    `}
-                  >
-                    <Icon size={20} className={item.iconColor} />
-                  </div>
-
-                  <div
-                    className={`
-                      text-xs mt-2 text-center
-
-                      ${
-                        active
-                          ? "text-gray-900 font-medium"
-                          : "text-gray-400"
-                      }
-                    `}
-                  >
-                    {item.title}
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
         </div>
 
       </div>

@@ -33,9 +33,9 @@ Mohon info lebih lanjut 🙏`
   return (
     <section className="space-y-3">
 
-      <h2 className="text-center text-sm md:text-lg font-semibold">
+      {/* <h2 className="text-center text-sm md:text-lg font-semibold">
         Simulasi Tabungan
-      </h2>
+      </h2> */}
 
       <div className="grid md:grid-cols-2 gap-2 md:gap-4">
 

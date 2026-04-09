@@ -2,16 +2,17 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { Button } from "@/components"
 
 export default function HeroSection() {
   return (
-    <section className="
-      relative w-full overflow-hidden
-
-      h-[520px] md:h-[640px] lg:h-[680px]   /* 🔥 FIX utama */
-
-      pt-[80px] md:pt-[100px]
-    ">
+    <section
+      className="
+        relative w-full overflow-hidden
+        min-h-[520px] md:min-h-[640px]
+        pt-[calc(var(--nav-h)+20px)]
+      "
+    >
 
       {/* BG */}
       <div className="absolute inset-0">
@@ -20,45 +21,59 @@ export default function HeroSection() {
           alt="Umrah"
           fill
           priority
-          className="object-cover"
+          className="object-cover scale-105"
         />
-        <div className="absolute inset-0 bg-black/60" />
+
+        <div className="
+          absolute inset-0
+          bg-gradient-to-t
+          from-black/80 via-black/40 to-black/10
+        " />
       </div>
 
       {/* CONTENT */}
-      <div className="relative z-10 h-full flex items-center">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 w-full text-white">
+      <div className="relative z-10 flex items-center min-h-[inherit]">
+        <div className="container text-white">
 
-          <div className="max-w-lg md:max-w-2xl">
+          <div className="max-w-xl space-y-content">
 
-            <div className="inline-block text-[10px] md:text-xs bg-green-600 px-3 py-1 rounded-full mb-3">
+            {/* BADGE */}
+            <div className="
+              inline-flex items-center gap-1
+              text-caption
+              bg-primary/90 px-3 py-1 rounded-full
+            ">
               ✨ Umrah Resmi & Terpercaya
             </div>
 
-            <h1 className="font-bold leading-tight text-lg md:text-4xl lg:text-5xl">
+            {/* TITLE */}
+            <h1 className="text-h1 md:text-[36px] font-semibold leading-tight">
               Umrah Jadi Lebih Mudah,
               <br className="hidden md:block" />
-              Mulai Dari <span className="text-green-400">Cicilan Ringan</span>
+              Mulai Dari{" "}
+              <span className="text-primary-light">
+                Cicilan Ringan
+              </span>
             </h1>
 
-            <p className="mt-3 text-xs md:text-base text-white/80 max-w-md">
+            {/* DESC */}
+            <p className="text-body text-white/80 max-w-md">
               Program fleksibel, aman, dan didampingi hingga berangkat.
             </p>
 
-            <div className="mt-5 flex gap-3">
+            {/* CTA */}
+            <div className="flex gap-2 pt-content">
 
-              <Link
-                href="/paket"
-                className="bg-green-600 px-5 py-3 rounded-xl text-sm md:text-base"
-              >
-                ✈️ Pilih Paket
+              <Link href="/paket">
+                <Button size="md">
+                  ✈️ Pilih Paket
+                </Button>
               </Link>
 
-              <Link
-                href="/kontak"
-                className="bg-white/10 px-5 py-3 rounded-xl text-sm md:text-base"
-              >
-                💬 Konsultasi
+              <Link href="/kontak">
+                <Button size="md">
+                  💬 Konsultasi
+                </Button>
               </Link>
 
             </div>
