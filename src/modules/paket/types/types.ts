@@ -116,7 +116,7 @@ export interface Paket {
 
   seat: number
   totalSeat: number
-
+  departure_city?: string | null
   // 🔥 TAMBAH INI
   seatLabel?: string | null
 

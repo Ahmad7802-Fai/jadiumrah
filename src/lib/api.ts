@@ -1,5 +1,3 @@
-// src/lib/api.ts
-
 import axios from "axios"
 import { getAPI } from "./config"
 
@@ -8,17 +6,20 @@ import { getAPI } from "./config"
 // ===============================
 
 export const api = axios.create({
-  baseURL: getAPI(), // 🔥 otomatis https://app.jadiumrah.cloud/api/v1
   headers: {
     "Content-Type": "application/json",
   },
 })
 
 // ===============================
-// REQUEST INTERCEPTOR (TOKEN)
+// REQUEST INTERCEPTOR (🔥 CORE FIX)
 // ===============================
 
 api.interceptors.request.use((config) => {
+  // 🔥 IMPORTANT: dynamic baseURL (ANTI STALE CONFIG)
+  config.baseURL = getAPI()
+
+  // 🔐 TOKEN
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("token")
 
@@ -35,34 +36,35 @@ api.interceptors.request.use((config) => {
 // ===============================
 
 api.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  (error) => {
-    // 🔥 HANDLE GLOBAL ERROR
+  (response) => response,
 
+  async (error) => {
     if (error.response) {
       const status = error.response.status
 
-      // 🔐 UNAUTHORIZED → AUTO LOGOUT
+      // 🔐 401 → AUTO LOGOUT
       if (status === 401) {
         if (typeof window !== "undefined") {
           localStorage.removeItem("token")
-          window.location.href = "/login"
+
+          // 🔥 prevent infinite redirect loop
+          if (window.location.pathname !== "/login") {
+            window.location.href = "/login"
+          }
         }
       }
 
       // ❌ VALIDATION ERROR
       if (status === 422) {
-        console.error("Validation Error:", error.response.data)
+        console.error("❌ Validation Error:", error.response.data)
       }
 
       // 💥 SERVER ERROR
-      if (status === 500) {
-        console.error("Server Error:", error.response.data)
+      if (status >= 500) {
+        console.error("💥 Server Error:", error.response.data)
       }
     } else {
-      console.error("Network Error:", error)
+      console.error("🌐 Network Error:", error)
     }
 
     return Promise.reject(error)
