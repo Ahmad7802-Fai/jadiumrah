@@ -6,6 +6,8 @@ export function mapPaket(item: PaketApi): Paket {
     name: item.name,
     slug: item.slug,
 
+    departure_city: item.departure_city, // 🔥 WAJIB
+
     // 🔥 FIX CDN IMAGE
     image: item.thumbnail_url
       ? item.thumbnail_url.replace("https://cdn.jadiumrah.cloud", "")

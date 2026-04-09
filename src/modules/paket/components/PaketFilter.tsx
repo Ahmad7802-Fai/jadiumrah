@@ -16,6 +16,7 @@ export default function PaketFilter({
 
   const isActive = city || minPrice || maxPrice
 
+  // ================= LOCK SCROLL =================
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden"
     else document.body.style.overflow = ""
@@ -25,13 +26,27 @@ export default function PaketFilter({
     }
   }, [open])
 
+  // ================= APPLY =================
   const handleApply = () => {
-    onApply?.({
-      departure_city: city,
-      min_price: minPrice,
-      max_price: maxPrice,
-    })
+    const payload: any = {}
+
+    if (city) payload.departure_city = city
+    if (minPrice && Number(minPrice) > 0)
+      payload.min_price = Number(minPrice)
+    if (maxPrice && Number(maxPrice) > 0)
+      payload.max_price = Number(maxPrice)
+
+    onApply?.(payload)
     setOpen(false)
+  }
+
+  // ================= RESET =================
+  const handleReset = () => {
+    setCity("")
+    setMinPrice("")
+    setMaxPrice("")
+
+    onApply?.({}) // 🔥 WAJIB biar parent reset
   }
 
   return (
@@ -43,6 +58,7 @@ export default function PaketFilter({
         className={`
           gap-1
           rounded-full border
+          flex items-center
 
           ${
             isActive
@@ -52,6 +68,11 @@ export default function PaketFilter({
         `}
       >
         ⚙️ Filter
+
+        {/* 🔥 INDICATOR */}
+        {isActive && (
+          <span className="ml-1 w-2 h-2 bg-green-500 rounded-full" />
+        )}
       </Button>
 
       {/* ================= MODAL ================= */}
@@ -70,84 +91,100 @@ export default function PaketFilter({
               absolute bottom-0 left-0 right-0
               bg-white rounded-t-2xl
               px-3 pt-2 pb-3
-              space-y-2
+              space-y-3
               max-h-[80vh]
               overflow-y-auto
-              slide-up
+              animate-in slide-in-from-bottom duration-300
             "
           >
 
             {/* HANDLE */}
-            <div className="w-7 h-[3px] bg-gray-300 rounded-full mx-auto" />
+            <div className="w-8 h-[3px] bg-gray-300 rounded-full mx-auto" />
 
             {/* TITLE */}
-            <div className="text-[11px] font-semibold text-center">
-              Filter
+            <div className="text-xs font-semibold text-center">
+              Filter Paket
             </div>
 
-            {/* QUICK CITY */}
-            <div className="flex gap-1 overflow-x-auto scrollbar-hide">
-              {["Jakarta", "Surabaya"].map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setCity(c)}
-                  className={`
-                    px-2 py-[4px]
-                    text-[9px]
-                    rounded-full
-                    border
-                    shrink-0
-                    ${
-                      city === c
-                        ? "bg-green-600 text-white border-green-600"
-                        : "bg-gray-100 text-gray-600 border-gray-200"
-                    }
-                  `}
-                >
-                  {c}
-                </button>
-              ))}
+            {/* ================= CITY ================= */}
+            <div className="space-y-1">
+
+              <div className="text-[10px] text-gray-500">
+                Kota Keberangkatan
+              </div>
+
+              <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+                {["Jakarta", "Surabaya"].map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setCity(c)}
+                    className={`
+                      px-2 py-[4px]
+                      text-[9px]
+                      rounded-full
+                      border
+                      shrink-0
+                      transition
+
+                      ${
+                        city === c
+                          ? "bg-green-600 text-white border-green-600"
+                          : "bg-gray-100 text-gray-600 border-gray-200"
+                      }
+                    `}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full border rounded-md px-2 py-1 text-[10px]"
+              >
+                <option value="">Semua kota</option>
+                <option value="Jakarta">Jakarta</option>
+                <option value="Surabaya">Surabaya</option>
+              </select>
             </div>
 
-            {/* SELECT */}
-            <select
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="w-full border rounded-md px-2 py-1 text-[10px]"
-            >
-              <option value="">Semua kota</option>
-              <option value="Jakarta">Jakarta</option>
-              <option value="Surabaya">Surabaya</option>
-            </select>
+            {/* ================= PRICE ================= */}
+            <div className="space-y-1">
 
-            {/* PRICE */}
-            <div className="grid grid-cols-2 gap-1">
-              <Input
-                placeholder="Min"
-                value={minPrice}
-                onChange={(e: any) => setMinPrice(e.target.value)}
-                className="text-[10px] py-1"
-              />
+              <div className="text-[10px] text-gray-500">
+                Range Harga
+              </div>
 
-              <Input
-                placeholder="Max"
-                value={maxPrice}
-                onChange={(e: any) => setMaxPrice(e.target.value)}
-                className="text-[10px] py-1"
-              />
+              <div className="grid grid-cols-2 gap-2">
+
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={minPrice}
+                  onChange={(e: any) => setMinPrice(e.target.value)}
+                  className="text-[10px] py-1"
+                />
+
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChange={(e: any) => setMaxPrice(e.target.value)}
+                  className="text-[10px] py-1"
+                />
+
+              </div>
+
             </div>
 
-            {/* ACTION */}
-            <div className="flex gap-1 pt-1">
+            {/* ================= ACTION ================= */}
+            <div className="flex gap-2 pt-2">
 
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => {
-                  setCity("")
-                  setMinPrice("")
-                  setMaxPrice("")
-                }}
+                onClick={handleReset}
                 className="flex-1"
               >
                 Reset

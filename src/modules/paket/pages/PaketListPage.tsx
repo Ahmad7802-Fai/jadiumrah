@@ -24,11 +24,21 @@ export default function PaketListPage({ pakets }: any) {
   })
 
   const filtered = searched.filter((item) => {
-    if (filters.departure_city && item.departure_city !== filters.departure_city) return false
-    if (filters.min_price && item.price < Number(filters.min_price)) return false
-    if (filters.max_price && item.price > Number(filters.max_price)) return false
-    return true
-  })
+  if (
+        filters.departure_city &&
+        item.departure_city !== filters.departure_city
+      )
+        return false
+
+      if (filters.min_price && item.price < filters.min_price)
+        return false
+
+      if (filters.max_price && item.price > filters.max_price)
+        return false
+
+      return true
+    })
+
 
   const sorted = [...filtered].sort((a, b) => {
     if (sort === "termurah") return a.price - b.price
