@@ -42,7 +42,7 @@ export default function VerifyEmail() {
         // 🔥 redirect lebih smooth
         setTimeout(() => {
           router.push(res?.token ? "/dashboard" : "/login")
-        }, 1500)
+        }, 3000)
 
       } catch (err: any) {
         const msg =
